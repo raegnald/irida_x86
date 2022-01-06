@@ -1,9 +1,8 @@
 " Irida syntax highlighting
 
-" Usage Instructions
 " Put this file in .vim/syntax/irida.vim
 " and add in your .vimrc file the next line:
-" autocmd BufRead,BufNewFile *.iri set filetype=irida
+"   autocmd BufRead,BufNewFile *.iri set filetype=irida
 
 if exists("b:current_syntax")
   finish
@@ -43,17 +42,3 @@ highlight default link iriCommentLine Comment
 highlight default link iriStr String
 highlight default link iriChar Character
 highlight default link iriInt Number
-
-
-setlocal indentexpr=IriIdent()
-function! IriIdent()
-  let line = getline(v:lnum)
-  let previousNum = prevnonblank(v:lnum - 1)
-  let previous = getline(previousNum)
-
-  if previous =~ "begin" && previous !~ "end" && line !~ "end" && line !~ "end"
-    return indent(previousNum) + &tabstop
-  endif
-endfunction
-
-let b:current_syntax = "irida"
