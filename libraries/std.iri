@@ -91,19 +91,36 @@ proc mul
 end
 
 proc div
+| xor rdx, rdx
 | pop rax
 | pop rbx
-| xor rax, rbx
 | div rbx
 | push rax
 end
 
 proc divI
 // Divide the inverse way
+| xor rdx, rdx
 | pop rbx
 | pop rax
 | div rbx
 | push rax
+end
+
+proc mod
+| xor rdx, rdx
+| pop rax
+| pop rbx
+| div rbx
+| push rdx
+end
+
+proc modI
+| xor rdx, rdx
+| pop rbx
+| pop rax
+| div rbx
+| push rdx
 end
 
 proc succ
@@ -130,35 +147,89 @@ proc eq
 | push rcx
 end
 
+proc either
+// Logical or
+| pop rax
+| pop rbx
+| or rax, rbx
+| push rax
+end
+
 
 // Stack operations
 
 proc drop 
+// ABC -> BC
 | pop rax
 end
 
 proc ddrop
+// ABC -> C
   drop drop
 end
 
-proc dupl 
+proc dropd
+// ABC -> AC
+// Drop down; pops the penultimate element that's on top
+  swap drop
+end
+
+proc dropdd
+// ABC -> A
+  swap third ddrop
+end
+
+proc dupl
+// A -> AA
 | pop rax
 | push rax
 | push rax
 end
 
 proc ddupl
+// A -> AAA
   dupl dupl
 end
 
 proc swap
+// AB -> BA
 | pop rax
 | pop rbx
 | push rax
 | push rbx
 end
 
+proc third
+// ABC -> CAB
+// Gets the third last element of the stack and moves it on top
+| pop rax
+| pop rbx
+| pop rcx
+| push rbx
+| push rax
+| push rcx
+end
 
+// Stack extended operations
+
+proc sDts
+// ABC -> BABC
+  swap dupl third swap
+end
+
+proc Dt
+// ABC -> BAAC
+  dupl third
+end
+
+proc st
+// ABC -> CBA
+  swap third
+end
+
+
+
+// .
 
 proc nothing 
 | nop
