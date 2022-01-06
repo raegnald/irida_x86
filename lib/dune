@@ -1,0 +1,15 @@
+(include_subdirs unqualified)
+
+(menhir
+ (modules parser))
+(ocamllex lexer)
+
+(library
+ (name irida)
+ (preprocess (pps ppx_deriving.show
+                  ppx_deriving.ord ))
+ (libraries unix)
+ (modules types
+          parser lexer
+          compile
+          utils templates))

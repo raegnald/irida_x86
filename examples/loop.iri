@@ -1,0 +1,10 @@
+
+// Vivan los bucles infinitos!
+
+0
+loop begin
+  1 +
+  dupl
+  print
+  1 exit
+end

@@ -1,0 +1,8 @@
+
+// Procedures and how to call them
+
+proc hola begin
+  34 35 +
+end
+
+hola print

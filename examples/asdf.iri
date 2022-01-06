@@ -1,0 +1,22 @@
+// Cool and interesting program in Irida
+// To compile and execute run
+//   irida vit.iri
+
+proc x begin 10 end
+proc y begin  5 end
+
+x y + 20 < if
+  then begin 55 end
+  else begin  y end
+print
+
+
+proc terminate begin
+  0 exit
+end
+
+0
+loop begin
+  1 + dupl print
+  terminate
+end

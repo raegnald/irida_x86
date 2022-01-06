@@ -1,0 +1,14 @@
+include "std.iri"
+
+strlen: "hola lola"
+printni
+drop
+
+prints: "The folling string has a length of "
+dupl: "Irida is a great little (and kinda fast) language\n" 
+  printni: strlen
+  prints: " characters\n" drop
+  prints
+  
+0 exit
+

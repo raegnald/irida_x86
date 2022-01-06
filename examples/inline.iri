@@ -1,0 +1,29 @@
+
+// Execute inline assembly
+
+
+proc equals begin
+  // Implementation of equals operation
+  | mov rcx, 0
+  | mov rdx, 1
+  | pop rax
+  | pop rbx 
+  | cmp rax, rbx
+  | cmove rcx, rdx
+  | push rcx
+end
+
+10 9 equals if
+  then begin  50 end
+  else begin 987 end
+print
+
+//proc hola begin
+//  +
+//end
+
+//50 10 hola
+//print
+
+
+// This is a good start for a standard library!

@@ -1,0 +1,134 @@
+///////////////////////////////////////////////////////////////////////////////
+//                                                                           //
+//                        Irida's Standard Library                           //
+//                            [Ronaldo Gligan]                               //
+//                                                                           //
+///////////////////////////////////////////////////////////////////////////////
+
+// Convinient procedures
+
+// strlen implementation
+|   jmp _strlen_end
+| _strlen:
+|   push  rcx            ; save and clear out counter
+|   xor   rcx, rcx
+| _strlen_next:
+|   cmp   [rdi], byte 0  ; null byte yet?
+|   jz    _strlen_null   ; yes, get out
+|   inc   rcx            ; char is ok, count it
+|   inc   rdi            ; move to next char
+|   jmp   _strlen_next   ; process again
+| _strlen_null:
+|   mov   rax, rcx       ; rcx = the length (put in rax)
+|   pop   rcx            ; restore rcx
+|   ret                  ; get out
+| _strlen_end:
+
+proc strlen
+  | pop rdi
+  | call _strlen
+  | push rax
+end
+
+
+///////////////////////////////////////////////////////////////////////////////
+
+proc printni 
+  | pop rdi
+  | call PRINTVAL
+end
+
+proc prints
+  // Prints a string with the write syscall only requiring the string to print
+
+  // ssize_t write(int fd, const void *buf, size_t count);
+  // Getting the string's length
+    dupl
+  | pop rdi
+  | call _strlen
+  | mov rdx, rax
+  // System opcode, 1 = write
+  | mov rax, 1
+  // File descriptor, 1 = stdout
+  | mov rdi, 1
+  | pop rsi
+  | syscall
+  | push rax
+end
+
+// Operations
+
+proc add 
+  | pop rax
+  | pop rbx
+  | add rax, rbx
+  | push rax
+end
+ 
+proc sub 
+  | pop rax
+  | pop rbx
+  | sub rax, rbx
+  | push rax
+end
+
+proc mul 
+  | pop rax
+  | pop rbx
+  | mul rbx
+  | push rax
+end
+
+proc div 
+  | pop rax
+  | pop rbx
+  | div rbx
+  | push rax
+end
+
+// Logic
+
+proc eq 
+  | mov rcx, 0
+  | mov rdx, 1
+  | pop rax
+  | pop rbx
+  | cmp rax, rbx
+  | cmove rcx, rdx
+  | push rcx
+end
+
+
+// Stack operations
+
+proc drop 
+  | pop rax
+end
+
+proc dupl 
+  | pop rax
+  | push rax
+  | push rax
+end
+
+
+// Commands
+
+proc ret 
+  | ret
+end
+
+proc nothing 
+  | nop
+end
+
+
+
+// Syscalls
+
+proc exit 
+  | mov rax, 60
+  | pop rdi
+  | syscall
+end
+
