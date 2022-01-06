@@ -38,4 +38,6 @@ parser.mli
 journal/
 
 *.exe
+*.asm
+*.o
 .history
