@@ -17,7 +17,6 @@
 %token REC
 
 %token LOOP
-%token IF
 %token THEN
 %token ELSE
 
@@ -90,11 +89,11 @@ op:
   //              INCLUDE; IDENT "http"
 
 
-  // .. if then .. end
-  | IF; THEN; then_branch = block
+  // .. then .. end
+  | THEN; then_branch = block
       { Types.If (then_branch, []) }
-  // .. if then .. else .. end  definitions
-  | IF; THEN; then_branch = then_block; else_branch = block
+  // .. then .. else .. end  definitions
+  | THEN; then_branch = then_block; else_branch = block
       { Types.If (then_branch, else_branch) }
 
 

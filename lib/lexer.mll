@@ -12,7 +12,7 @@
     tbl
 
   let keyword_table = 
-    create_hashtable 10 [
+    create_hashtable 9 [
       (* ("begin", BEGIN); *)
       ("end", END);
 
@@ -23,7 +23,7 @@
       ("rec", REC);
       ("loop", LOOP);
 
-      ("if", IF);
+      (* ("if", IF); *)
       ("then", THEN);
       ("else", ELSE);
 
