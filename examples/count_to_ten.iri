@@ -1,0 +1,13 @@
+include "std.iri"
+
+printns: "Welcome to this fantastic irida program"
+
+0
+loop
+  1 add ddupl
+  printni
+
+  10 eq if then
+    0 exit
+  end
+end

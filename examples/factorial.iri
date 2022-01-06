@@ -1,0 +1,15 @@
+include "std.iri"
+
+proc rec fact
+  dupl
+  is_zero if
+    then drop 1
+    else dupl pred fact mul end
+end
+
+
+true
+if then
+  5 fact
+  printni
+end
