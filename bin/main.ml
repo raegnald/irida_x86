@@ -54,7 +54,7 @@ let () =
       let assemble_command =
         sprintf "nasm -felf64 %s" tmp_asm_filename
       and link_command =
-        sprintf "ld %s -o %s" obj_filename filename in
+        sprintf "gcc -no-pie %s -o %s" obj_filename filename in
 
       sprintf "Assembling: %s" assemble_command |> Inform.info;
       exec assemble_command;
