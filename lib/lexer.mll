@@ -12,7 +12,7 @@
     tbl
 
   let keyword_table = 
-    create_hashtable 9 [
+    create_hashtable 10 [
       (* ("begin", BEGIN); *)
       ("end", END);
 
@@ -20,6 +20,7 @@
       (* ("std", STD); *)
 
       ("proc", PROC);
+      ("rec", REC);
       ("loop", LOOP);
 
       ("if", IF);
@@ -50,7 +51,7 @@ let ws = [' ' '\t' '\r' '\n']
 
 (* Identifiers *)
 let letter = ['a'-'z' 'A'-'Z']
-let ident = letter+
+let ident = letter (letter | '_')*
 
 (* Escapes for string literals *)
 let backslash_escapes =

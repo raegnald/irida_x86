@@ -14,8 +14,9 @@
 %token INCLUDE
 
 %token PROC
-%token LOOP
+%token REC
 
+%token LOOP
 %token IF
 %token THEN
 %token ELSE
@@ -53,6 +54,13 @@ block:
       { [] }
   ;
 
+then_block:
+  | o = op; o2 = then_block
+      { o::o2 }
+  | ELSE
+      { [] }
+  ;
+
 
 op:
   | i = INT
@@ -64,7 +72,7 @@ op:
 
 //   | o1 = op; COLON; o2 = op
 //       { o1 o2 }
-//     Cool feature
+//     Cool feature [known as "the colon syntax"]
 //          instead of `5 3 add`,
 //          you could alternatively write
 //          `5 add: 3`
@@ -75,12 +83,26 @@ op:
 
   | INCLUDE; s = STR
        { Types.Include s }
+  // TOOD: add rules to parse things such as
+  //              INCLUDE; IDENT "std"
+  //              INCLUDE; IDENT "http"
 
-  | IF; THEN; then_branch = block; ELSE; else_branch = block
+
+  // .. if then .. end
+  | IF; THEN; then_branch = block
+      { Types.If (then_branch, []) }
+  // .. if then .. else .. end  definitions
+  | IF; THEN; then_branch = then_block; else_branch = block
       { Types.If (then_branch, else_branch) }
 
+
+  // Non-recursive procedure definitions
   | PROC; name = IDENT; ops = block
-      { Types.Proc (name, ops) }
+      { Types.Proc (false, name, ops) }
+  // Recursive procedures definitions
+  | PROC; REC; name = IDENT; ops = block
+      { Types.Proc (true, name, ops) }
+
 
   | LOOP; ops = block
       { Types.Loop ops }
