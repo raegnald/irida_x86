@@ -83,6 +83,8 @@ op:
 
   | INCLUDE; s = STR
        { Types.Include s }
+  | INCLUDE; s = IDENT
+       { Types.Include ("/usr/local/irida/libraries/" ^ s ^ ".iri") }
   // TOOD: add rules to parse things such as
   //              INCLUDE; IDENT "std"
   //              INCLUDE; IDENT "http"
