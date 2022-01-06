@@ -1,4 +1,4 @@
-include "std.iri"
+include std
 
 printns: "Welcome to this fantastic irida program"
 
