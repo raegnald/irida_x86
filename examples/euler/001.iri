@@ -1,0 +1,29 @@
+include std
+
+// Project Euler #001 (https://projecteuler.net/problem=1)
+// Find the sum of all the multiples of 3 or 5 below the given number
+
+proc multiples_sum
+  0 swap
+  loop
+    pred ddupl
+    is_zero then
+      ddrop
+    | jmp end_loop
+    end
+    dupl
+
+    3 modI 0 eq swap
+    5 modI 0 eq
+    either then
+      Dt add swap
+    end
+
+  end
+| end_loop:
+end
+
+
+1000
+  printi: multiples_sum
+  printns: " is the result"
