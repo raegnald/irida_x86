@@ -5,56 +5,59 @@
 //                                                                           //
 ///////////////////////////////////////////////////////////////////////////////
 
-// Convinient procedures
-
-// strlen implementation
-|   jmp _strlen_end
-| _strlen:
-|   push  rcx            ; save and clear out counter
-|   xor   rcx, rcx
-| _strlen_next:
-|   cmp   [rdi], byte 0  ; null byte yet?
-|   jz    _strlen_null   ; yes, get out
-|   inc   rcx            ; char is ok, count it
-|   inc   rdi            ; move to next char
-|   jmp   _strlen_next   ; process again
-| _strlen_null:
-|   mov   rax, rcx       ; rcx = the length (put in rax)
-|   pop   rcx            ; restore rcx
-|   ret                  ; get out
-| _strlen_end:
+// C standard input/output bindings
 
 proc strlen
+  | extern strlen
   | pop rdi
-  | call _strlen
+  | call strlen
   | push rax
+end
+
+proc printi 
+  | extern printf
+    "%d"
+  | pop rdi         ; format
+  | pop rsi         ; number to print
+  | xor rax, rax    ; no more args
+  | call printf 
+end
+
+proc printni 
+  | extern printf
+    "%d\n"
+  | pop rdi         ; format
+  | pop rsi         ; number to print
+  | xor rax, rax    ; no more args
+  | call printf 
+end
+
+proc prints
+  | extern printf
+    "%s"
+  | pop rdi         ; format
+  | pop rsi         ; number to print
+  | xor rax, rax    ; no more args
+  | call printf 
+end
+
+proc printns
+  | extern printf
+    "%s\n"
+  | pop rdi         ; format
+  | pop rsi         ; number to print
+  | xor rax, rax    ; no more args
+  | call printf 
+end
+
+proc puts
+  | extern puts
+  | pop rdi
+  | call puts
 end
 
 
 ///////////////////////////////////////////////////////////////////////////////
-
-proc printni 
-  | pop rdi
-  | call PRINTVAL
-end
-
-proc prints
-  // Prints a string with the write syscall only requiring the string to print
-
-  // ssize_t write(int fd, const void *buf, size_t count);
-  // Getting the string's length
-    dupl
-  | pop rdi
-  | call _strlen
-  | mov rdx, rax
-  // System opcode, 1 = write
-  | mov rax, 1
-  // File descriptor, 1 = stdout
-  | mov rdi, 1
-  | pop rsi
-  | syscall
-  | push rax
-end
 
 // Operations
 
@@ -72,18 +75,47 @@ proc sub
   | push rax
 end
 
-proc mul 
+proc subI
+  // Subtract the inverse way
+  | pop rbx
+  | pop rax
+  | sub rax, rbx
+  | push rax
+end
+
+proc mul
   | pop rax
   | pop rbx
   | mul rbx
   | push rax
 end
 
-proc div 
+proc div
   | pop rax
   | pop rbx
+  | xor rax, rbx
   | div rbx
   | push rax
+end
+
+proc divI
+  // Divide the inverse way
+  | pop rbx
+  | pop rax
+  | div rbx
+  | push rax
+end
+
+proc succ
+  1 add
+end
+
+proc pred
+  -1 add
+end
+
+proc is_zero
+  0 eq
 end
 
 // Logic
@@ -105,18 +137,28 @@ proc drop
   | pop rax
 end
 
+proc ddrop
+  drop drop
+end
+
 proc dupl 
   | pop rax
   | push rax
   | push rax
 end
 
-
-// Commands
-
-proc ret 
-  | ret
+proc ddupl
+  dupl dupl
 end
+
+proc swap
+  | pop rax
+  | pop rbx
+  | push rax
+  | push rbx
+end
+
+
 
 proc nothing 
   | nop
