@@ -80,8 +80,14 @@ let rec compile_op op =
         List.iter compile_op ops;
         jmpOp ("loop_" ^ (string_of_int i)) |> a
 
-    | Proc (name, ops) ->
-        Hashtbl.add !procedures name ops
+    | Proc (is_rec, name, ops) ->
+        if not is_rec then
+          Hashtbl.add !procedures name ops
+        else begin
+          procHeader name |> a;
+          List.iter compile_op ops;
+          procFooter name |> a
+        end
 
     | Inline line ->
         (* "    " ^  *)

@@ -5,7 +5,7 @@ type op =
   | PushStr of string       (* The string itself *)
   | StrLoc of int           (* The location to a string *)
   | Loop of op list
-  | Proc of string * op list
+  | Proc of bool * string * op list  (* is_rec, proc_name, proc_body *)
   | If of op list * op list
   | Inline of string
   | Include of string
