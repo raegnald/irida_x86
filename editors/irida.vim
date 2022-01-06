@@ -1,6 +1,5 @@
 " Irida syntax highlighting
 
-" Usage Instructions
 " Put this file in .vim/syntax/irida.vim
 " and add in your .vimrc file the next line:
 " autocmd BufRead,BufNewFile *.iri set filetype=irida
