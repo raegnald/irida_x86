@@ -7,7 +7,7 @@ loop
   1 add ddupl
   printni
 
-  10 eq if then
+  10 eq then
     0 exit
   end
 end
