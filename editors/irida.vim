@@ -42,3 +42,5 @@ highlight default link iriCommentLine Comment
 highlight default link iriStr String
 highlight default link iriChar Character
 highlight default link iriInt Number
+
+let b:current_syntax = "irida"
