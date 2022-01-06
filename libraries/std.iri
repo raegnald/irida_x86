@@ -8,52 +8,52 @@
 // C standard input/output bindings
 
 proc strlen
-  | extern strlen
-  | pop rdi
-  | call strlen
-  | push rax
+| extern strlen
+| pop rdi
+| call strlen
+| push rax
 end
 
 proc printi 
-  | extern printf
-    "%d"
-  | pop rdi         ; format
-  | pop rsi         ; number to print
-  | xor rax, rax    ; no more args
-  | call printf 
+| extern printf
+  "%d"
+| pop rdi         ; format
+| pop rsi         ; number to print
+| xor rax, rax    ; no more args
+| call printf 
 end
 
 proc printni 
-  | extern printf
-    "%d\n"
-  | pop rdi         ; format
-  | pop rsi         ; number to print
-  | xor rax, rax    ; no more args
-  | call printf 
+| extern printf
+  "%d\n"
+| pop rdi         ; format
+| pop rsi         ; number to print
+| xor rax, rax    ; no more args
+| call printf 
 end
 
 proc prints
-  | extern printf
+| extern printf
     "%s"
-  | pop rdi         ; format
-  | pop rsi         ; number to print
-  | xor rax, rax    ; no more args
-  | call printf 
+| pop rdi         ; format
+| pop rsi         ; number to print
+| xor rax, rax    ; no more args
+| call printf 
 end
 
 proc printns
-  | extern printf
-    "%s\n"
-  | pop rdi         ; format
-  | pop rsi         ; number to print
-  | xor rax, rax    ; no more args
-  | call printf 
+| extern printf
+  "%s\n"
+| pop rdi         ; format
+| pop rsi         ; number to print
+| xor rax, rax    ; no more args
+| call printf 
 end
 
 proc puts
-  | extern puts
-  | pop rdi
-  | call puts
+| extern puts
+| pop rdi
+| call puts
 end
 
 
@@ -62,48 +62,48 @@ end
 // Operations
 
 proc add 
-  | pop rax
-  | pop rbx
-  | add rax, rbx
-  | push rax
+| pop rax
+| pop rbx
+| add rax, rbx
+| push rax
 end
  
 proc sub 
-  | pop rax
-  | pop rbx
-  | sub rax, rbx
-  | push rax
+| pop rax
+| pop rbx
+| sub rax, rbx
+| push rax
 end
 
 proc subI
-  // Subtract the inverse way
-  | pop rbx
-  | pop rax
-  | sub rax, rbx
-  | push rax
+// Subtract the inverse way
+| pop rbx
+| pop rax
+| sub rax, rbx
+| push rax
 end
 
 proc mul
-  | pop rax
-  | pop rbx
-  | mul rbx
-  | push rax
+| pop rax
+| pop rbx
+| mul rbx
+| push rax
 end
 
 proc div
-  | pop rax
-  | pop rbx
-  | xor rax, rbx
-  | div rbx
-  | push rax
+| pop rax
+| pop rbx
+| xor rax, rbx
+| div rbx
+| push rax
 end
 
 proc divI
-  // Divide the inverse way
-  | pop rbx
-  | pop rax
-  | div rbx
-  | push rax
+// Divide the inverse way
+| pop rbx
+| pop rax
+| div rbx
+| push rax
 end
 
 proc succ
@@ -121,20 +121,20 @@ end
 // Logic
 
 proc eq 
-  | mov rcx, 0
-  | mov rdx, 1
-  | pop rax
-  | pop rbx
-  | cmp rax, rbx
-  | cmove rcx, rdx
-  | push rcx
+| mov rcx, 0
+| mov rdx, 1
+| pop rax
+| pop rbx
+| cmp rax, rbx
+| cmove rcx, rdx
+| push rcx
 end
 
 
 // Stack operations
 
 proc drop 
-  | pop rax
+| pop rax
 end
 
 proc ddrop
@@ -142,9 +142,9 @@ proc ddrop
 end
 
 proc dupl 
-  | pop rax
-  | push rax
-  | push rax
+| pop rax
+| push rax
+| push rax
 end
 
 proc ddupl
@@ -152,16 +152,16 @@ proc ddupl
 end
 
 proc swap
-  | pop rax
-  | pop rbx
-  | push rax
-  | push rbx
+| pop rax
+| pop rbx
+| push rax
+| push rbx
 end
 
 
 
 proc nothing 
-  | nop
+| nop
 end
 
 
@@ -169,8 +169,8 @@ end
 // Syscalls
 
 proc exit 
-  | mov rax, 60
-  | pop rdi
-  | syscall
+| mov rax, 60
+| pop rdi
+| syscall
 end
 
