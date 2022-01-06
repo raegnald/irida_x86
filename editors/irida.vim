@@ -1,8 +1,9 @@
 " Irida syntax highlighting
 
+" Usage Instructions
 " Put this file in .vim/syntax/irida.vim
 " and add in your .vimrc file the next line:
-"   autocmd BufRead,BufNewFile *.iri set filetype=irida
+" autocmd BufRead,BufNewFile *.iri set filetype=irida
 
 if exists("b:current_syntax")
   finish
@@ -10,9 +11,9 @@ endif
 
 syntax keyword iriTodos TODO FIXME NOTE
 syntax keyword iriKeywords
-  " begin
   \ end
-  \ alloc proc
+  \ alloc
+  \ proc rec
   \ assert
   \ printi prints
   \ add sub mul div
@@ -42,5 +43,6 @@ highlight default link iriCommentLine Comment
 highlight default link iriStr String
 highlight default link iriChar Character
 highlight default link iriInt Number
+
 
 let b:current_syntax = "irida"
