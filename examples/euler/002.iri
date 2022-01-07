@@ -1,0 +1,35 @@
+include std
+
+// Project Euler #002 (https://projecteuler.net/problem=2)
+// Find the sum of the even-valued fibonacci terms
+
+proc even_fibs
+  alloc 8 max   !max
+  alloc 8 x   1 !x
+  alloc 8 y   1 !y
+  alloc 8 z   0 !z
+  alloc 8 sum 0 !sum
+
+  loop
+    @max @z le then
+      @sum
+    | jmp loop_end
+    else
+     
+      @x @y add !z
+
+      @y !x
+      @z !y
+
+      @y 2 modI 0 eq then
+        @sum @y add !sum
+      end
+    end
+
+  end
+| loop_end:
+end
+
+
+4_000_000 even_fibs
+  printni
