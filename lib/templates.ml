@@ -12,14 +12,14 @@ let header =
 
 
 
-let bss_segment _mem_capacity =
+let bss_segment mem_capacity =
   "segment .bss"          @@
   "args_ptr: resq 1"      @@
   "ret_stack_rsp: resq 1" @@
   "ret_stack: resb 8192"  @@
   "ret_stack_end:"        @@
-  "mem: resb 0"
-  (* "mem: resb " ^ mem_capacity *)
+  "mem: resb " ^ mem_capacity
+
 
 (** Takes a string and returns another string with the decimal value of each
     of each character *)
@@ -28,17 +28,19 @@ let str_to_dec_val_list str =
   |> List.fold_left (fun res c -> Printf.sprintf "%s%d," res (int_of_char c)) "")
   ^ " 0"
 
-
-let footer (strings: (int * string) list) _mem_capacity =
+let footer (strings: (int * string) list) (allocations: (int * string) list) mem_capacity =
   let str_to_asm (index, str) =
     "str_" ^ string_of_int index ^
     ": db " ^ str_to_dec_val_list str ^ "\n" in
 
   "    ret" @@
+  "segment .data" @@
   List.fold_left (fun res (i, str) ->
     res ^ str_to_asm (i, str) ) "" strings
-  @@ "    intretval: times 8 db 0"
-  @@ bss_segment _mem_capacity
+  @@
+  List.fold_left (fun res (i, str) ->
+    res ^ (Printf.sprintf "    %s: dq %d" str i) ) "" allocations
+  @@ bss_segment mem_capacity
 
 
 let pushInt i =
