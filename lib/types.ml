@@ -2,15 +2,17 @@
 type op =
   | Ident of string
   | PushInt of int
-  | PushStr of string       (* The string itself *)
-  | StrLoc of int           (* The location to a string *)
+  | PushStr of string
   | Loop of op list
-  | Proc of bool * string * op list  (* is_rec, proc_name, proc_body *)
+  | Proc of bool * string * op list
   | Macro of string * op list
   | MacroReplace of string
   | If of op list * op list
   | Inline of string
   | Include of string
+  | Alloc of int * string
+  | MemWrite of string
+  | MemRead of string
 [@@deriving show
   { with_path = false }]
 
