@@ -39,7 +39,7 @@ let footer (strings: (int * string) list) (allocations: (int * string) list) mem
     res ^ str_to_asm (i, str) ) "" strings
   @@
   List.fold_left (fun res (i, str) ->
-    res ^ (Printf.sprintf "    %s: dq %d" str i) ) "" allocations
+    res ^ (Printf.sprintf "    %s: dq %d\n" str i) ) "" allocations
   @@ bss_segment mem_capacity
 
 
