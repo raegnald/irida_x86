@@ -155,6 +155,76 @@ proc either
 | push rax
 end
 
+proc not
+| pop rax
+| mov rbx, 1
+| xor rax, rbx
+| push rax
+end
+
+macro compare
+| pop rax
+| pop rbx
+| cmp rax, rbx
+end
+
+macro compareI
+| pop rbx
+| pop rax
+| cmp rax, rbx
+end
+
+proc gt
+| pop rbx
+| add rbx, 1
+| push rbx
+  $compare
+| jg _gt_true
+| jmp _gt_false
+| _gt_true:
+    1
+  | jmp _gt_end
+| _gt_false:
+  0
+| _gt_end:
+  not
+end
+
+proc le
+  $compareI
+| jle _le_true
+| jmp _le_false
+| _le_true:
+    1
+  | jmp _le_end
+| _le_false:
+  0
+| _le_end:
+end
+
+proc lt
+  $compareI
+| jl _lt_true
+| jmp _lt_false
+| _lt_true:
+    1
+  | jmp _lt_end
+| _lt_false:
+  0
+| _lt_end:
+end
+
+proc ge
+  $compareI
+| jge _ge_true
+| jmp _ge_false
+| _ge_true:
+    1
+  | jmp _ge_end
+| _ge_false:
+  0
+| _ge_end:
+end
 
 // Stack operations
 
