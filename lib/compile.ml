@@ -4,7 +4,7 @@ open Utils
 open Utils.Out
 open Templates
 
-let mem_capacity = ref 640_000
+let mem_capacity = ref 0
 
 
 let open_and_parse source_file =
@@ -15,6 +15,7 @@ let open_and_parse source_file =
 
 let procedures = ref (Hashtbl.create 0)
 let macros = ref (Hashtbl.create 0)
+let allocations = ref []
 let strings: (int * string) list ref = ref []
 let index = ref 0
 
@@ -32,14 +33,8 @@ let rec compile_op op =
     | PushStr s ->
         advance_index ();
         let i = !index in
-        (* TODO: *)
-        (* 1. Add them to the strings list *)
-        (* 2. Replace the string with its unique label *)
-        (* Continue... *)
         strings := (i, s) :: !strings;
-        "    push str_" ^ string_of_int i |> a;
-
-        ()
+        "    push str_" ^ string_of_int i |> a
 
     | Ident x ->
         (try
@@ -97,6 +92,26 @@ let rec compile_op op =
     | Macro (name, ops) ->
         Hashtbl.add !macros ("$" ^ name) ops
 
+    | Alloc (amount, name) ->
+        let start = !mem_capacity in
+        mem_capacity := !mem_capacity + amount;
+        allocations := (start, name) :: !allocations
+
+    | MemWrite name ->
+        "    mov rax, mem" @@
+        "    add rax, [" ^ name ^ "]" @@
+        "    pop rbx" @@
+        "    mov [rax], rbx"
+        |> a
+
+    | MemRead name ->
+        "    mov rax, mem" @@
+        "    add rax, [" ^ name ^ "]" @@
+        "    xor rbx, rbx" @@
+        "    mov rbx, [rax]" @@
+        "    push rbx"
+        |> a
+
     | Inline line ->
         (* "    " ^  *)
         line |> a
@@ -105,7 +120,6 @@ let rec compile_op op =
         open_and_parse f
           |> List.iter compile_op
 
-    | _ -> ()
 
 
 and compile ?(show_parse=false) (source_file) =
@@ -118,6 +132,6 @@ and compile ?(show_parse=false) (source_file) =
   List.iter compile_op ops;
   !mem_capacity
     |> string_of_int
-    |> footer (!strings)
+    |> footer (!strings) (!allocations)
     |> append;
   get ()

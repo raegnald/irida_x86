@@ -21,6 +21,8 @@
       ("rec", REC);
       ("macro", MACRO);
 
+      ("alloc", ALLOC);
+
       ("loop", LOOP);
 
       ("then", THEN);
@@ -68,6 +70,10 @@ rule read = parse
         INLINE_ASM (String.trim !instructions) }
   | ":"
       { COLON }
+  | "!"
+      { EXCLAMATION }
+  | "@"
+      { AT_SIGN }
 
   | int
       { INT (Lexing.lexeme lexbuf

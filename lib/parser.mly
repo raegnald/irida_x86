@@ -9,10 +9,14 @@
 
 // %token SEMICOLON
 %token COLON
+%token EXCLAMATION
+%token AT_SIGN
 
 %token END
 
 %token INCLUDE
+
+%token ALLOC
 
 %token PROC
 %token REC
@@ -82,9 +86,15 @@ op:
        { Types.Include s }
   | INCLUDE; s = IDENT
        { Types.Include ("/usr/local/irida/libraries/" ^ s ^ ".iri") }
-  // TOOD: add rules to parse things such as
-  //              INCLUDE; IDENT "std"
-  //              INCLUDE; IDENT "http"
+
+  | ALLOC; i = INT; x = IDENT
+        { Types.Alloc (i, x) }
+
+  | EXCLAMATION; x = IDENT
+        { Types.MemWrite x }
+  | AT_SIGN; x = IDENT
+        { Types.MemRead x }
+
 
 
   // .. then .. end
