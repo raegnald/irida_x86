@@ -1,0 +1,10 @@
+include std
+
+// Allocate msg with size of integer (which is 8 bytes)
+alloc 8 lola
+
+// Write to memory
+34 35 add !lola
+
+// Read from memory and put it on top of the stack, then print it
+printni: @lola
