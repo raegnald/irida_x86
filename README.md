@@ -8,6 +8,17 @@
 
 Irida is general purpose compiled programming language that targets `x86_64 GNU/Linux`. It works with the concept of being stack-based, you put things on the stack, work with them by arranging them depending on your needs.
 
+## Installation
+
+Go to the project's folder and
+
+```console
+sudo ./install.sh
+```
+
+*Note that you need [dune](dune.build) in order to build the project*
+
+
 ## Examples
 
 The [examples folder](examples/) contains programs that let you see what Irida is capable of.
