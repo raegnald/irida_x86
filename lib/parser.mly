@@ -39,9 +39,6 @@ prog:
       { o::o2 }
   | o1 = op; COLON; o2 = op; rest = prog
       { o2::o1::rest }
-//   | o = op; COLON; b = block; rest = prog
-//       { b @ o::rest }
-
   | EOF
       { [] }
   ;
@@ -77,10 +74,6 @@ op:
 //          instead of `5 3 add`,
 //          you could alternatively write
 //          `5 add: 3`
-
-
-//   | BEGIN; o = op;
-//       { o }
 
   | INCLUDE; s = STR
        { Types.Include s }
