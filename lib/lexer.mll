@@ -51,7 +51,7 @@ let ws = [' ' '\t' '\r' '\n']
 
 (* Identifiers *)
 let letter = ['a'-'z' 'A'-'Z']
-let ident = letter (letter | '_')*
+let ident = letter (letter | digit | '_')*
 
 (* Escapes for string literals *)
 let backslash_escapes =
