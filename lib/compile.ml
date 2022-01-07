@@ -13,7 +13,8 @@ let open_and_parse source_file =
     |> Program.parse
 
 
-let procedures = ref (Hashtbl.create ~random:false 0)
+let procedures = ref (Hashtbl.create 0)
+let macros = ref (Hashtbl.create 0)
 let strings: (int * string) list ref = ref []
 let index = ref 0
 
@@ -53,6 +54,10 @@ let rec compile_op op =
         with
           | Not_found -> procCall x |> a )
 
+    | MacroReplace x ->
+        let body = Hashtbl.find !macros x in
+        List.iter compile_op body
+
     | If (then_branch, else_branch) ->
         advance_index ();
         let i = !index in
@@ -88,6 +93,9 @@ let rec compile_op op =
           List.iter compile_op ops;
           procFooter name |> a
         end
+    
+    | Macro (name, ops) ->
+        Hashtbl.add !macros ("$" ^ name) ops
 
     | Inline line ->
         (* "    " ^  *)

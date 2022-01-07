@@ -12,18 +12,17 @@
     tbl
 
   let keyword_table = 
-    create_hashtable 9 [
-      (* ("begin", BEGIN); *)
+    create_hashtable 10 [
       ("end", END);
 
       ("include", INCLUDE);
-      (* ("std", STD); *)
 
       ("proc", PROC);
       ("rec", REC);
+      ("macro", MACRO);
+
       ("loop", LOOP);
 
-      (* ("if", IF); *)
       ("then", THEN);
       ("else", ELSE);
 
@@ -78,6 +77,9 @@ rule read = parse
       { Buffer.clear string_buff;
         string lexbuf;
         STR (Buffer.contents string_buff) }
+
+  | "$" ident as m
+      { MACRO_REPLACE m }
 
   | ident as word
       { try

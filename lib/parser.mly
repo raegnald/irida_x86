@@ -5,6 +5,7 @@
 %token <string> STR
 %token <string> IDENT
 %token <string> INLINE_ASM
+%token <string> MACRO_REPLACE
 
 // %token SEMICOLON
 %token COLON
@@ -16,19 +17,14 @@
 %token PROC
 %token REC
 
+%token MACRO
+
 %token LOOP
 %token THEN
 %token ELSE
 
 %token EOF
 
-
-// Precedence & Associativity
-// %nonassoc IN
-// %nonassoc ELSE
-// %left MINUS
-// %left PLUS
-// %left ASTERISK
 
 %start <Types.program> prog
 
@@ -68,6 +64,8 @@ op:
     { Types.Ident x }
   | s = STR
     { Types.PushStr s }
+  | m = MACRO_REPLACE
+    { Types.MacroReplace m }
 
 //   | o1 = op; COLON; o2 = op
 //       { o1 o2 }
@@ -103,6 +101,10 @@ op:
   // Recursive procedures definitions
   | PROC; REC; name = IDENT; ops = block
       { Types.Proc (true, name, ops) }
+
+  // Macro definitions
+  | MACRO; name = IDENT; ops = block
+      { Types.Macro (name, ops) }
 
 
   | LOOP; ops = block
