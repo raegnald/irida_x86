@@ -37,6 +37,7 @@ let footer (strings: (int * string) list) _mem_capacity =
   "    ret" @@
   List.fold_left (fun res (i, str) ->
     res ^ str_to_asm (i, str) ) "" strings
+  @@ "    intretval: times 8 db 0"
   @@ bss_segment _mem_capacity
 
 
