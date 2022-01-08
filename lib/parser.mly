@@ -46,6 +46,8 @@ prog:
 block:
   | o = op; o2 = block
       { o::o2 }
+  | o1 = op; COLON; o2 = op; rest = block
+      { o2::o1::rest }
   | END
       { [] }
   ;
