@@ -92,15 +92,6 @@ end
 
 proc div
 | xor rdx, rdx
-| pop rax
-| pop rbx
-| div rbx
-| push rax
-end
-
-proc divI
-// Divide the inverse way
-| xor rdx, rdx
 | pop rbx
 | pop rax
 | div rbx
@@ -108,14 +99,6 @@ proc divI
 end
 
 proc mod
-| xor rdx, rdx
-| pop rax
-| pop rbx
-| div rbx
-| push rdx
-end
-
-proc modI
 | xor rdx, rdx
 | pop rbx
 | pop rax
