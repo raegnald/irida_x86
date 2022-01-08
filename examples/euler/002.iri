@@ -11,7 +11,7 @@ proc even_fibs
   alloc 8 sum 0 !sum
 
   loop
-    @max @z le then
+    @max le: @z then
       @sum
     | jmp loop_end
     else
@@ -21,7 +21,7 @@ proc even_fibs
       @y !x
       @z !y
 
-      @y 2 modI 0 eq then
+      @y mod: 2 eq: 0 then
         @sum @y add !sum
       end
     end
@@ -33,3 +33,4 @@ end
 
 4_000_000 even_fibs
   printni
+
