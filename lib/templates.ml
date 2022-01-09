@@ -107,3 +107,41 @@ let procCall name =
   "call " ^ "label_" ^ (name ^ "_init") @@
   "mov [ret_stack_rsp], rsp"       @@
   "mov rsp, rax"
+
+
+
+
+let pushStr i =
+  "    push str_" ^ string_of_int i
+
+  
+
+
+let ifHeader i =
+  label (string_of_int i ^ "_if") @@
+  "    pop rax"                   @@
+  "    test rax, rax"             @@
+  "    jz label_" ^ string_of_int i ^ "_else"
+
+let ifFooter i =
+  label (string_of_int i ^ "_ifend")
+
+
+
+
+
+
+
+
+let memWrite name =
+  "    mov rax, mem" @@
+  "    add rax, [" ^ name ^ "]" @@
+  "    pop rbx" @@
+  "    mov [rax], rbx"
+
+let memRead name =
+  "    mov rax, mem" @@
+  "    add rax, [" ^ name ^ "]" @@
+  "    xor rbx, rbx" @@
+  "    mov rbx, [rax]" @@
+  "    push rbx"

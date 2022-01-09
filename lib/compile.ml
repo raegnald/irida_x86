@@ -34,7 +34,7 @@ let rec compile_op op =
         advance_index ();
         let i = !index in
         strings := (i, s) :: !strings;
-        "    push str_" ^ string_of_int i |> a
+        pushStr i |> a
 
     | Ident x ->
         (try
@@ -56,26 +56,17 @@ let rec compile_op op =
     | If (then_branch, else_branch) ->
         advance_index ();
         let i = !index in
-
-        (* Comprobation *)
-        label (string_of_int i ^ "_if") |> a;
-        "    pop rax"       @@
-        "    test rax, rax" @@
-        "    jz label_" ^ string_of_int i ^ "_else"
-        |> a;
-        (* Then *)
-        List.iter compile_op then_branch;
+        ifHeader i |> a;
+        List.iter compile_op then_branch; (* Then *)
         jmpOp (string_of_int i ^ "_ifend") |> a;
-        (* Else *)
-        label (string_of_int i ^ "_else") |> a;
+        label (string_of_int i ^ "_else") |> a; (* Else *)
         List.iter compile_op else_branch;
         (* If end *)
-        label (string_of_int i ^ "_ifend") |> a
+        ifFooter i |> a
 
     | Loop ops ->
         advance_index ();
         let i = !index in
-        
         "label_loop_" ^ (string_of_int i) ^ ":" |> a;
         List.iter compile_op ops;
         jmpOp ("loop_" ^ (string_of_int i)) |> a
@@ -98,27 +89,17 @@ let rec compile_op op =
         allocations := (start, name) :: !allocations
 
     | MemWrite name ->
-        "    mov rax, mem" @@
-        "    add rax, [" ^ name ^ "]" @@
-        "    pop rbx" @@
-        "    mov [rax], rbx"
-        |> a
+        memWrite name |> a
 
     | MemRead name ->
-        "    mov rax, mem" @@
-        "    add rax, [" ^ name ^ "]" @@
-        "    xor rbx, rbx" @@
-        "    mov rbx, [rax]" @@
-        "    push rbx"
-        |> a
+        memRead name |> a
 
     | Inline line ->
-        (* "    " ^  *)
         line |> a
-    
+
     | Include f ->
-        open_and_parse f
-          |> List.iter compile_op
+        open_and_parse f |>
+        List.iter compile_op
 
 
 
