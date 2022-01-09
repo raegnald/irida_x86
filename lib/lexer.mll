@@ -69,8 +69,14 @@ rule read = parse
         INLINE_ASM (String.trim !instructions) }
   | ":"
       { COLON }
+  | ";"
+      { SEMICOLON }
+  | "%"
+      { PERCENT_SIGN }
   | "!"
       { EXCLAMATION }
+  | "?"
+      { INTERROGATION }
   | "@"
       { AT_SIGN }
 

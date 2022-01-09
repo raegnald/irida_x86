@@ -7,9 +7,11 @@
 %token <string> INLINE_ASM
 %token <string> MACRO_REPLACE
 
-// %token SEMICOLON
 %token COLON
+%token SEMICOLON
+%token PERCENT_SIGN
 %token EXCLAMATION
+%token INTERROGATION
 %token AT_SIGN
 
 %token END
@@ -35,10 +37,16 @@
 %%
 
 prog:
+  | o1 = op; COLON; o2 = op; r = prog
+      { o2 :: o1 :: r }
+  | o1 = op; PERCENT_SIGN; o2 = semicolon_block; r = prog
+      { o2 @ o1 :: r }
+  // Ternary operator-like syntax support
+  | INTERROGATION; then_op = op; COLON; else_op = op; SEMICOLON; r = prog
+      { (Types.If ([then_op], [else_op])) :: r }
+
   | o = op; o2 = prog
       { o::o2 }
-  | o1 = op; COLON; o2 = op; rest = prog
-      { o2::o1::rest }
   | EOF
       { [] }
   ;
@@ -46,15 +54,35 @@ prog:
 block:
   | o = op; o2 = block
       { o::o2 }
-  | o1 = op; COLON; o2 = op; rest = block
-      { o2::o1::rest }
+  | o1 = op; COLON; o2 = op; r = block
+      { o2 :: o1 :: r }
+  | o1 = op; PERCENT_SIGN; o2 = semicolon_block; r = block
+      { o2 @ o1 :: r }
+  | INTERROGATION; then_op = op; COLON; else_op = op; SEMICOLON; r = block
+      { (Types.If ([then_op], [else_op])) :: r }
   | END
       { [] }
   ;
 
+semicolon_block:
+  | o = op; o2 = semicolon_block
+      { o::o2 }
+  | o1 = op; COLON; o2 = op; r = semicolon_block
+      { o2 :: o1 :: r }
+  | INTERROGATION; then_op = op; COLON; else_op = op; SEMICOLON; r = semicolon_block
+      { (Types.If ([then_op], [else_op])) :: r }
+  | SEMICOLON
+      { [] }
+
 then_block:
   | o = op; o2 = then_block
       { o::o2 }
+  | o1 = op; COLON; o2 = op; r = then_block
+      { o2 :: o1 :: r }
+  | o1 = op; PERCENT_SIGN; o2 = semicolon_block; r = then_block
+      { o2 @ o1 :: r }
+  | INTERROGATION; then_op = op; COLON; else_op = op; SEMICOLON; r = then_block
+      { (Types.If ([then_op], [else_op])) :: r }
   | ELSE
       { [] }
   ;
@@ -70,12 +98,6 @@ op:
   | m = MACRO_REPLACE
     { Types.MacroReplace m }
 
-//   | o1 = op; COLON; o2 = op
-//       { o1 o2 }
-//     Cool feature [known as "the colon syntax"]
-//          instead of `5 3 add`,
-//          you could alternatively write
-//          `5 add: 3`
 
   | INCLUDE; s = STR
        { Types.Include s }
