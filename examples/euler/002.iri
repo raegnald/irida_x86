@@ -15,11 +15,9 @@ proc even_fibs
       @sum
     | jmp loop_end
     else
-     
-      @x @y add !z
-
-      @y !x
-      @z !y
+      !z % @x add: @y;
+      !x : @y
+      !y : @z
 
       @y mod: 2 eq: 0 then
         @sum @y add !sum
@@ -31,6 +29,5 @@ proc even_fibs
 end
 
 
-4_000_000 even_fibs
-  printni
-
+printni %
+  4_000_000 even_fibs;

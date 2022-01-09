@@ -13,8 +13,8 @@ proc multiples_sum
     end
     dupl
 
-    3 modI 0 eq swap
-    5 modI 0 eq
+    3 mod eq: 0 swap
+    5 mod eq: 0
     either then
       Dt add swap
     end
