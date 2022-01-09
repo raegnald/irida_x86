@@ -4,210 +4,14 @@
 //                            [Ronaldo Gligan]                               //
 //                                                                           //
 ///////////////////////////////////////////////////////////////////////////////
-
 // C standard input/output bindings
+// Convinient procedures
+// ...
 
-proc strlen
-| extern strlen
-| pop rdi
-| call strlen
-| push rax
+proc nothing 
+| nop
 end
 
-proc printi 
-| extern printf
-  "%d"
-| pop rdi         ; format
-| pop rsi         ; number to print
-| xor rax, rax    ; no more args
-| call printf 
-end
-
-proc printni 
-| extern printf
-  "%d\n"
-| pop rdi         ; format
-| pop rsi         ; number to print
-| xor rax, rax    ; no more args
-| call printf 
-end
-
-proc prints
-| extern printf
-    "%s"
-| pop rdi         ; format
-| pop rsi         ; number to print
-| xor rax, rax    ; no more args
-| call printf 
-end
-
-proc printns
-| extern printf
-  "%s\n"
-| pop rdi         ; format
-| pop rsi         ; number to print
-| xor rax, rax    ; no more args
-| call printf 
-end
-
-proc puts
-| extern puts
-| pop rdi
-| call puts
-end
-
-
-///////////////////////////////////////////////////////////////////////////////
-
-// Operations
-
-proc add 
-| pop rax
-| pop rbx
-| add rax, rbx
-| push rax
-end
- 
-proc sub 
-| pop rax
-| pop rbx
-| sub rax, rbx
-| push rax
-end
-
-proc subI
-// Subtract the inverse way
-| pop rbx
-| pop rax
-| sub rax, rbx
-| push rax
-end
-
-proc mul
-| pop rax
-| pop rbx
-| mul rbx
-| push rax
-end
-
-proc div
-| xor rdx, rdx
-| pop rbx
-| pop rax
-| div rbx
-| push rax
-end
-
-proc mod
-| xor rdx, rdx
-| pop rbx
-| pop rax
-| div rbx
-| push rdx
-end
-
-proc succ
-  1 add
-end
-
-proc pred
-  -1 add
-end
-
-proc is_zero
-  0 eq
-end
-
-// Logic
-
-proc eq 
-| mov rcx, 0
-| mov rdx, 1
-| pop rax
-| pop rbx
-| cmp rax, rbx
-| cmove rcx, rdx
-| push rcx
-end
-
-proc either
-// Logical or
-| pop rax
-| pop rbx
-| or rax, rbx
-| push rax
-end
-
-proc not
-| pop rax
-| mov rbx, 1
-| xor rax, rbx
-| push rax
-end
-
-macro compare
-| pop rax
-| pop rbx
-| cmp rax, rbx
-end
-
-macro compareI
-| pop rbx
-| pop rax
-| cmp rax, rbx
-end
-
-proc gt
-| pop rbx
-| add rbx, 1
-| push rbx
-  $compare
-| jg _gt_true
-| jmp _gt_false
-| _gt_true:
-    1
-  | jmp _gt_end
-| _gt_false:
-  0
-| _gt_end:
-  not
-end
-
-proc le
-  $compareI
-| jle _le_true
-| jmp _le_false
-| _le_true:
-    1
-  | jmp _le_end
-| _le_false:
-  0
-| _le_end:
-end
-
-proc lt
-  $compareI
-| jl _lt_true
-| jmp _lt_false
-| _lt_true:
-    1
-  | jmp _lt_end
-| _lt_false:
-  0
-| _lt_end:
-end
-
-proc ge
-  $compareI
-| jge _ge_true
-| jmp _ge_false
-| _ge_true:
-    1
-  | jmp _ge_end
-| _ge_false:
-  0
-| _ge_end:
-end
 
 // Stack operations
 
@@ -281,11 +85,224 @@ proc st
 end
 
 
+// Procedures on strings
 
-// .
+proc lens
+| extern strlen
+| pop rdi
+| call strlen
+| push rax
+end
 
-proc nothing 
-| nop
+
+// Procedures on integers
+
+proc is_even
+  mod: 2 eq: 0
+end
+
+proc is_odd
+  mod: 2 not % eq: 0;
+end
+
+
+// Print functions
+
+proc printi 
+| extern printf
+  "%d"
+| pop rdi         ; format
+| pop rsi         ; number to print
+| xor rax, rax    ; no more args
+| call printf 
+end
+
+proc printni 
+| extern printf
+  "%d\n"
+| pop rdi         ; format
+| pop rsi         ; number to print
+| xor rax, rax    ; no more args
+| call printf 
+end
+
+proc prints
+| extern printf
+    "%s"
+| pop rdi         ; format
+| pop rsi         ; number to print
+| xor rax, rax    ; no more args
+| call printf 
+end
+
+proc printns
+| extern printf
+  "%s\n"
+| pop rdi         ; format
+| pop rsi         ; number to print
+| xor rax, rax    ; no more args
+| call printf 
+end
+
+proc puts
+| extern puts
+| pop rdi
+| call puts
+end
+
+
+///////////////////////////////////////////////////////////////////////////////
+
+// Operations
+
+proc add 
+| pop rax
+| pop rbx
+| add rax, rbx
+| push rax
+end
+ 
+proc sub
+| pop rbx
+| pop rax
+| sub rax, rbx
+| push rax
+end
+
+proc mul
+| pop rax
+| pop rbx
+| mul rbx
+| push rax
+end
+
+proc div
+| xor rdx, rdx
+| pop rbx
+| pop rax
+| div rbx
+| push rax
+end
+
+proc mod
+| xor rdx, rdx
+| pop rbx
+| pop rax
+| div rbx
+| push rdx
+end
+
+proc succ
+  1 add
+end
+
+proc pred
+  -1 add
+end
+
+proc is_zero
+  0 eq
+end
+
+// Logic
+
+proc eq 
+| mov rcx, 0
+| mov rdx, 1
+| pop rax
+| pop rbx
+| cmp rax, rbx
+| cmove rcx, rdx
+| push rcx
+end
+
+proc either
+// Logical or
+| pop rax
+| pop rbx
+| or rax, rbx
+| push rax
+end
+proc or either end
+
+proc both
+// Logical and
+| pop rax
+| pop rbx
+| and rax, rbx
+| push rax
+end
+proc and both end
+
+proc not
+| pop rax
+| mov rbx, 1
+| xor rax, rbx
+| push rax
+end
+
+macro compare
+| pop rax
+| pop rbx
+| cmp rax, rbx
+end
+
+macro compareI
+| pop rbx
+| pop rax
+| cmp rax, rbx
+end
+
+proc gt
+| pop rbx
+| add rbx, 1
+| push rbx
+  $compare
+| jg _gt_true
+| jmp _gt_false
+| _gt_true:
+    1
+  | jmp _gt_end
+| _gt_false:
+  0
+| _gt_end:
+  not
+end
+
+proc le
+  $compareI
+| jle _le_true
+| jmp _le_false
+| _le_true:
+    1
+  | jmp _le_end
+| _le_false:
+  0
+| _le_end:
+end
+
+proc lt
+  $compareI
+| jl _lt_true
+| jmp _lt_false
+| _lt_true:
+    1
+  | jmp _lt_end
+| _lt_false:
+  0
+| _lt_end:
+end
+
+proc ge
+  $compareI
+| jge _ge_true
+| jmp _ge_false
+| _ge_true:
+    1
+  | jmp _ge_end
+| _ge_false:
+  0
+| _ge_end:
 end
 
 
