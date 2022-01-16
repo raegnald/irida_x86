@@ -16,7 +16,7 @@ Go to the project's folder and
 sudo ./install.sh
 ```
 
-*Note that you need [dune](dune.build) in order to build the project*
+*Note that you need [dune](https://dune.build) in order to build the project*
 
 
 ## Examples
@@ -58,7 +58,6 @@ end
 
 fact: 5
   printni
-
 ```
 
 ---
