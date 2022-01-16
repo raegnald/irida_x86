@@ -43,10 +43,11 @@ let () =
 
     exec "mkdir -p /tmp/irida";
 
-    if !generate_asm then
+    if !generate_asm then begin
       sprintf "Assembly dumped into %s" asm_filename
         |> Inform.info;
-      File.write asm_filename asm;
+      File.write asm_filename asm
+    end;
 
     File.write tmp_asm_filename asm;
 
