@@ -31,7 +31,6 @@ let () =
   try
     Inform.inform_messages !activate_msgs;
 
-
     let asm = compile ~show_parse:!show_parsing_result (!source_file) in
 
     (** Filename without extension *)
@@ -44,8 +43,7 @@ let () =
     exec "mkdir -p /tmp/irida";
 
     if !generate_asm then begin
-      sprintf "Assembly dumped into %s" asm_filename
-        |> Inform.info;
+      Inform.info ("Assembly dumped into " ^ asm_filename);
       File.write asm_filename asm
     end;
 
@@ -57,14 +55,13 @@ let () =
       and link_command =
         sprintf "gcc -no-pie %s -o %s" obj_filename filename in
 
-      sprintf "Assembling: %s" assemble_command |> Inform.info;
+      Inform.info ("Assembling: " ^ assemble_command);
       exec assemble_command;
-      sprintf "Linking: %s" link_command |> Inform.info;
+      Inform.info ("Linking: " ^ link_command);
       exec link_command;
-      
+
       if !only_build then
-        sprintf "Binary executable located at %s" filename
-          |> Inform.success
+        Inform.success ("Binary executable located at " ^ filename)
       else begin
         sprintf "Running %s" filename |> Inform.info;
         exec filename
