@@ -10,14 +10,31 @@ Irida is general purpose compiled programming language that targets `x86_64 GNU/
 
 ## Installation
 
-Go to the project's folder and
+Clone this repository, go to the project's folder and
 
 ```console
 sudo ./install.sh
 ```
 
+Once it's done, you will have the `irida` command available on your system.
+
 *Note that you need [dune](https://dune.build) in order to build the project*
 
+## Running
+
+If the Irida program is contained in `file.iri` you would do
+
+```console
+irida ./file.iri
+```
+
+That will create the executable file with the same name (but without any extension) in the same folder that the file is. It will also run it.
+
+For help:
+
+```console
+irida -help
+```
 
 ## Examples
 
