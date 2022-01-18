@@ -44,6 +44,13 @@ module File = struct
     let oc = open_out filename in
     Printf.fprintf oc "%s\n" contents;
     close_out oc
+
+  (** [add_current_directory_if_implicit filename] prepens `./` to filename if it
+      doesn't contain an explicit reference to the working directory  *)
+  let add_current_directory_if_implicit filename =
+    if Filename.is_implicit filename then
+      "./" ^ filename
+    else filename
 end
 
 

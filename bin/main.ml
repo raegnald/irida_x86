@@ -64,7 +64,8 @@ let () =
         Inform.success ("Binary executable located at " ^ filename)
       else begin
         sprintf "Running %s" filename |> Inform.info;
-        exec filename
+
+        File.add_current_directory_if_implicit filename |> exec
       end
     end
 
