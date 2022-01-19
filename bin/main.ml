@@ -13,6 +13,7 @@ let () =
 
   let source_file = ref ""
   and generate_asm = ref false
+  and typecheck_program = ref false
   and assemble_and_link = ref true
   and only_build = ref false
   and show_parsing_result = ref false
@@ -26,14 +27,19 @@ let () =
       ("-inform", Arg.Set activate_msgs,
         "Give information messages. Silent by default");
       ("-parsed", Arg.Set show_parsing_result,
-        "Show the result of parsing") ]
+        "Show the result of parsing");
+      ("-no-typecheck", Arg.Set typecheck_program,
+        "Compiles unsafe code") ]
     (fun s -> source_file := s)
     "gligan [OPTIONS] <file>.iri\nOPTIONS:";
 
   try
     Inform.inform_messages !activate_msgs;
 
-    let asm = compile ~show_parse:!show_parsing_result (!source_file) in
+    let asm =
+      compile ~show_parse:!show_parsing_result
+              ~typecheck_program:(not !typecheck_program)
+              !source_file in
 
     (** Filename without extension *)
     let filename = Filename.chop_extension !source_file in
@@ -66,7 +72,6 @@ let () =
         Inform.success ("Binary executable located at " ^ filename)
       else begin
         sprintf "Running %s" filename |> Inform.info;
-
         File.add_current_directory_if_implicit filename |> exec
       end
     end
@@ -77,6 +82,7 @@ let () =
     | File.No_filename_specified -> Inform.fatal "No filename specified"
     | Failure e -> Inform.fatal (e ^
         ". It is probable that the input file has malformed syntax")
-    | Parser.Error -> Inform.fatal "Input file has bad syntax" 
+    | Parser.Error -> Inform.fatal "Input file has bad syntax"
+    | Typecheck.Typechecking_error e -> Inform.fatal ("Type checking: " ^ e)
     | Command.Cannot_run command -> Inform.fatal ("Cannot run " ^ command)
     | Not_found -> () (* No error in here *)
