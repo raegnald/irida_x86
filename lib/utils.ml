@@ -97,3 +97,11 @@ module Command = struct
       | WEXITED _ -> ()
       | _ -> raise (Cannot_run command)
 end
+
+let open_and_parse source_file =
+  source_file
+    |> File.read_all
+    |> Program.parse
+
+let string_of_datatype dt =
+    show_datatype dt |> String.lowercase_ascii
