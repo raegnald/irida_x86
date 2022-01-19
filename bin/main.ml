@@ -9,6 +9,8 @@ let () =
   let open Printf in
   let open Command in
 
+  assert Sys.unix;
+
   let source_file = ref ""
   and generate_asm = ref false
   and assemble_and_link = ref true
