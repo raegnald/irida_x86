@@ -50,7 +50,7 @@ let typecheck_op op =
           List.iter (fun t -> push t s) outputs
         with
           | Empty -> raise (Typechecking_error
-              "Insufficient elements in the stack, canot call procedure") )
+              "Insufficient elements in the stack, cannot call procedure") )
 
     | Proc (name, _, inputs, outputs, _) ->
         Hashtbl.add !procedures name (inputs, outputs)
