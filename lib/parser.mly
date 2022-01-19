@@ -21,11 +21,13 @@
 %token ALLOC
 
 %token PROC
-// %token REC
+%token REC
 
 %token MACRO
 
 %token LOOP
+%token WHILE
+%token DO
 %token THEN
 %token ELSE
 
@@ -46,56 +48,21 @@
 %%
 
 prog:
-  | o1 = op; COLON; o2 = op; r = prog
-      { o2 :: o1 :: r }
-  | o1 = op; PERCENT_SIGN; o2 = semicolon_block; r = prog
-      { o2 @ o1 :: r }
-  // Ternary operator-like syntax support
-  | INTERROGATION; then_op = op; COLON; else_op = op; SEMICOLON; r = prog
-      { (Types.If ([then_op], [else_op])) :: r }
-
-  | o = op; o2 = prog
-      { o::o2 }
-  | EOF
-      { [] }
+  | p = block(EOF) { p }
   ;
 
-block:
-  | o = op; o2 = block
+block(fin):
+  | o = op; o2 = block(fin)
       { o::o2 }
-  | o1 = op; COLON; o2 = op; r = block
+  | o1 = op; COLON; o2 = op; r = block(fin)
       { o2 :: o1 :: r }
-  | o1 = op; PERCENT_SIGN; o2 = semicolon_block; r = block
+  | o1 = op; PERCENT_SIGN; o2 = block(SEMICOLON); r = block(fin)
       { o2 @ o1 :: r }
-  | INTERROGATION; then_op = op; COLON; else_op = op; SEMICOLON; r = block
+  | INTERROGATION; then_op = op; COLON; else_op = op; SEMICOLON; r = block(fin)
       { (Types.If ([then_op], [else_op])) :: r }
-  | END
+  | fin
       { [] }
   ;
-
-semicolon_block:
-  | o = op; o2 = semicolon_block
-      { o::o2 }
-  | o1 = op; COLON; o2 = op; r = semicolon_block
-      { o2 :: o1 :: r }
-  | INTERROGATION; then_op = op; COLON; else_op = op; SEMICOLON; r = semicolon_block
-      { (Types.If ([then_op], [else_op])) :: r }
-  | SEMICOLON
-      { [] }
-
-then_block:
-  | o = op; o2 = then_block
-      { o::o2 }
-  | o1 = op; COLON; o2 = op; r = then_block
-      { o2 :: o1 :: r }
-  | o1 = op; PERCENT_SIGN; o2 = semicolon_block; r = then_block
-      { o2 @ o1 :: r }
-  | INTERROGATION; then_op = op; COLON; else_op = op; SEMICOLON; r = then_block
-      { (Types.If ([then_op], [else_op])) :: r }
-  | ELSE
-      { [] }
-  ;
-
 
 datatype:
   | TILDE { Types.Generic }
@@ -120,53 +87,57 @@ op:
   | i = INT
       { Types.PushInt i }
   | x = IDENT
-    { Types.Ident x }
+      { Types.Ident x }
   | s = STR
-    { Types.PushStr s }
+      { Types.PushStr s }
   | m = MACRO_REPLACE
-    { Types.MacroReplace m }
+      { Types.MacroReplace m }
 
 
   | INCLUDE; s = STR
-       { Types.Include s }
+      { Types.Include s }
   | INCLUDE; s = IDENT
-       { Types.Include ("/usr/local/irida/libraries/" ^ s ^ ".iri") }
+      { Types.Include ("/usr/local/irida/libraries/" ^ s ^ ".iri") }
 
-  | ALLOC; i = INT; x = IDENT
-        { Types.Alloc (i, x) }
+  | ALLOC; i = datatype; x = IDENT
+      { Types.Alloc (i, x) }
 
   | EXCLAMATION; x = IDENT
-        { Types.MemWrite x }
+      { Types.MemWrite x }
   | AT_SIGN; x = IDENT
-        { Types.MemRead x }
+      { Types.MemRead x }
 
 
 
   // .. then .. end
-  | THEN; then_branch = block
+  | THEN; then_branch = block(END)
       { Types.If (then_branch, []) }
-  // .. then .. else .. end  definitions
-  | THEN; then_branch = then_block; else_branch = block
+  // .. then .. else .. end
+  | THEN; then_branch = block(ELSE); else_branch = block(END)
       { Types.If (then_branch, else_branch) }
 
+  | WHILE; cond = block(DO); loop_body = block(END)
+      { Types.While (cond, loop_body) }
 
   // Non-recursive procedure definitions
   | PROC; name = IDENT;
     inputs = proc_type_list; outputs = proc_type_list;
-    ops = block
+    ops = block(END)
       { Types.Proc (name, false, inputs, outputs, ops) }
 
 
   // Recursive procedures definitions
-//   | PROC; REC; name = IDENT; ops = block
-//       { Types.Proc (true, name, ops) }
+  | PROC; REC name = IDENT;
+    inputs = proc_type_list; outputs = proc_type_list;
+    ops = block(END)
+      { Types.Proc (name, true, inputs, outputs, ops) }
 
   // Macro definitions
-  | MACRO; name = IDENT; ops = block
+  | MACRO; name = IDENT; ops = block(END)
       { Types.Macro (name, ops) }
 
 
-  | LOOP; ops = block
+  | LOOP; ops = block(END)
       { Types.Loop ops }
 
   | line = INLINE_ASM
