@@ -75,9 +75,9 @@ let rec compile_op op =
     | Macro (name, ops) ->
         Hashtbl.add !macros ("$" ^ name) ops
 
-    | Alloc (amount, name) ->
+    | Alloc (_data_t, name) ->
         let start = !mem_capacity in
-        mem_capacity := !mem_capacity + amount;
+        mem_capacity := !mem_capacity + 8; (* amount; *)
         allocations := (start, name) :: !allocations
 
     | MemWrite name ->
