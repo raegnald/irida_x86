@@ -12,13 +12,13 @@
     tbl
 
   let keyword_table = 
-    create_hashtable 10 [
+    create_hashtable 13 [
       ("end", END);
 
       ("include", INCLUDE);
 
       ("proc", PROC);
-      ("rec", REC);
+      (* ("rec", REC); *)
       ("macro", MACRO);
 
       ("alloc", ALLOC);
@@ -30,6 +30,9 @@
 
       ("true", INT 1);
       ("false", INT 0);
+
+      ("int", INTT);
+      ("str", STRT)
     ]
 
     (* String literals *)
@@ -67,6 +70,12 @@ rule read = parse
       { instructions := "";
         inline lexbuf;
         INLINE_ASM (String.trim !instructions) }
+  | "("
+      { LPAREN }
+  | ")"
+      { RPAREN }
+  | ","
+      { COMMA }
   | ":"
       { COLON }
   | ";"
@@ -79,6 +88,8 @@ rule read = parse
       { INTERROGATION }
   | "@"
       { AT_SIGN }
+  | "~"
+      { TILDE }
 
   | int
       { INT (Lexing.lexeme lexbuf
