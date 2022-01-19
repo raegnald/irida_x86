@@ -23,6 +23,9 @@ syntax keyword iriOperators
   \ add sub mul div
   \ eq gt ge lt le
 
+syntax keyword iriTypes
+  \ int nat bool char list   " nat = unsigned int
+
 syntax keyword iriConditionals if then else
 syntax keyword iriRepeats loop while
 syntax keyword iriInclude include
@@ -30,7 +33,6 @@ syntax keyword iriInclude include
 syntax region iriCommentLine start="//" end="$" contains=iriTodos
 syntax region iriStr start=/\v"/ skip=/\v\\./ end=/\v"/
 syntax region iriChar start=/\v'/ skip=/\v\\./ end=/\v'/
-"syntax region iriInt start='\d[[:digit:]]*\.\d*[eE][\-+]\=\d\+'
 
 syntax match iriInt "\v<\d+>"
 
@@ -41,6 +43,7 @@ highlight default link iriOperators Operator
 highlight default link iriConditionals Conditional
 highlight default link iriRepeats Repeat
 highlight default link iriInclude Include
+highlight default link iriTypes Type
 highlight default link iriBool Boolean
 highlight default link iriCommentLine Comment
 highlight default link iriStr String
