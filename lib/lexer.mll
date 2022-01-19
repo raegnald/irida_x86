@@ -12,18 +12,21 @@
     tbl
 
   let keyword_table = 
-    create_hashtable 13 [
+    create_hashtable 15 [
       ("end", END);
 
       ("include", INCLUDE);
 
       ("proc", PROC);
-      (* ("rec", REC); *)
+      ("rec", REC);
       ("macro", MACRO);
 
       ("alloc", ALLOC);
 
       ("loop", LOOP);
+
+      ("while", WHILE);
+      ("do", DO);
 
       ("then", THEN);
       ("else", ELSE);

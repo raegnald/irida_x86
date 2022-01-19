@@ -109,7 +109,7 @@ end
 
 proc itos int str
 // Integer to string
-  alloc 8 itos_acc // buffer
+  alloc int itos_acc // buffer
 | extern sprintf
 | pop rdx         ; integer to tranform
   @itos_acc

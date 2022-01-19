@@ -12,13 +12,14 @@ type op =
   | PushInt of int
   | PushStr of string
   | Loop of op list
+  | While of op list * op list
   | Proc of string * bool * datatype list * datatype list * op list
   | Macro of string * op list
   | MacroReplace of string
   | If of op list * op list
   | Inline of string
   | Include of string
-  | Alloc of int * string
+  | Alloc of datatype * string
   | MemWrite of string
   | MemRead of string
 [@@deriving show

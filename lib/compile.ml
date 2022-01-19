@@ -89,7 +89,25 @@ let rec compile_op op =
     | Inline line ->
         line |> a
 
-    | _ -> failwith ("unknown " ^ show_op op)
+    | While (cond_ops, body_ops) ->
+        advance_index ();
+        let i = !index in
+
+        "label_while_cond_" ^ (string_of_int i) ^ ":" |> a;
+        List.iter compile_op cond_ops;
+        "pop rax"       @@
+        "test rax, rax" @@
+        "jz while_end_" ^ (string_of_int i) |> a;
+
+        "label_while_body_" ^ (string_of_int i) ^ ":" |> a;
+        List.iter compile_op body_ops;
+
+        jmpOp ("while_cond_" ^ (string_of_int i)) |> a;
+
+        "while_end_" ^ (string_of_int i) ^ ":" |> a;
+
+
+    | _ -> failwith ("Cannot generate code for " ^ show_op op)
 
 
 let resolved_includes = ref []
