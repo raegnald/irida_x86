@@ -5,14 +5,6 @@ open Utils.Out
 open Templates
 
 let mem_capacity = ref 0
-
-
-let open_and_parse source_file =
-  source_file
-    |> File.read_all
-    |> Program.parse
-
-
 let procedures = ref (Hashtbl.create 0)
 let macros = ref (Hashtbl.create 0)
 let allocations = ref []
@@ -71,7 +63,7 @@ let rec compile_op op =
         List.iter compile_op ops;
         jmpOp ("loop_" ^ (string_of_int i)) |> a
 
-    | Proc (is_rec, name, ops) ->
+    | Proc (name, is_rec, _inputs, _outputs, ops) ->
         if not is_rec then
           Hashtbl.add !procedures name ops
         else begin
@@ -97,20 +89,35 @@ let rec compile_op op =
     | Inline line ->
         line |> a
 
-    | Include f ->
-        open_and_parse f |>
-        List.iter compile_op
+    | _ -> failwith ("unknown " ^ show_op op)
 
 
+let resolved_includes = ref []
+let rec resolve_includes (program: op list): op list =
+  match program with
+    | [] -> []
+    | Include f::rest ->
+        if List.exists (fun el -> String.equal el f) !resolved_includes then
+          resolve_includes rest
+        else begin
+          resolved_includes := List.append !resolved_includes [f];
+          (open_and_parse f |> resolve_includes) @ resolve_includes rest
+        end
+    | op::rest ->
+        op::resolve_includes rest
 
-and compile ?(show_parse=false) (source_file) =
-  let ops =  open_and_parse source_file in
+and compile ?(show_parse=false) ?(typecheck_program=true) source_file =
+  let program = open_and_parse source_file in
+  let program' = resolve_includes program in
 
   if show_parse then
-    show_program ops |> print_endline;
+    show_program program' |> print_endline;
+
+  if typecheck_program then
+    Typecheck.typecheck program';
 
   append header;
-  List.iter compile_op ops;
+  List.iter compile_op program';
   !mem_capacity
     |> string_of_int
     |> footer (!strings) (!allocations)
