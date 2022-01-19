@@ -21,13 +21,22 @@
 %token ALLOC
 
 %token PROC
-%token REC
+// %token REC
 
 %token MACRO
 
 %token LOOP
 %token THEN
 %token ELSE
+
+%token LPAREN
+%token RPAREN
+
+%token COMMA
+
+%token TILDE
+%token INTT
+%token STRT
 
 %token EOF
 
@@ -88,6 +97,25 @@ then_block:
   ;
 
 
+datatype:
+  | TILDE { Types.Generic }
+  | INTT { Types.Int }
+  | STRT { Types.Str }
+
+comma_sep_type_lst:
+  | t = datatype; COMMA; rest = comma_sep_type_lst
+      { t::rest }
+  | t = datatype; RPAREN
+      { [t] }
+  | RPAREN
+      { [] }
+
+proc_type_list:
+  | LPAREN; l = comma_sep_type_lst
+      { l }
+  | t = datatype
+      { [t] }
+
 op:
   | i = INT
       { Types.PushInt i }
@@ -123,11 +151,15 @@ op:
 
 
   // Non-recursive procedure definitions
-  | PROC; name = IDENT; ops = block
-      { Types.Proc (false, name, ops) }
+  | PROC; name = IDENT;
+    inputs = proc_type_list; outputs = proc_type_list;
+    ops = block
+      { Types.Proc (name, false, inputs, outputs, ops) }
+
+
   // Recursive procedures definitions
-  | PROC; REC; name = IDENT; ops = block
-      { Types.Proc (true, name, ops) }
+//   | PROC; REC; name = IDENT; ops = block
+//       { Types.Proc (true, name, ops) }
 
   // Macro definitions
   | MACRO; name = IDENT; ops = block
