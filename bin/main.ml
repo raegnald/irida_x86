@@ -12,6 +12,7 @@ let () =
   assert Sys.unix;
 
   let source_file = ref ""
+  and output_file = ref ""
   and generate_asm = ref false
   and typecheck_program = ref false
   and assemble_and_link = ref true
@@ -20,7 +21,9 @@ let () =
   and activate_msgs = ref false in
 
   Arg.parse
-    [ ("-build", Arg.Set only_build,
+    [ ("-o", Arg.String (fun name -> output_file := name),
+        "Output executable name");
+      ("-build", Arg.Set only_build,
         "Just build, elsewhere it will also run the executable");
       ("-asm", Arg.Set generate_asm,
         "Keep the assembly file");
@@ -57,11 +60,15 @@ let () =
 
     File.write tmp_asm_filename asm;
 
+    (* If no output exec file name is set *)
+    if String.length !output_file = 0 then
+      output_file := filename;
+
     if !assemble_and_link then begin
       let assemble_command =
         sprintf "nasm -felf64 %s" tmp_asm_filename
       and link_command =
-        sprintf "gcc -no-pie %s -o %s" obj_filename filename in
+        sprintf "gcc -no-pie %s -o %s" obj_filename !output_file in
 
       Inform.info ("Assembling: " ^ assemble_command);
       exec assemble_command;
