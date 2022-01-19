@@ -8,47 +8,48 @@
 // Convinient procedures
 // ...
 
-proc nothing 
+proc nothing () ()
 | nop
 end
 
+proc id ~ ~ end
 
 // Stack operations
 
-proc drop 
+proc drop (~) ()
 // ABC -> BC
 | pop rax
 end
 
-proc ddrop
+proc ddrop (~, ~) ()
 // ABC -> C
   drop drop
 end
 
-proc dropd
+proc dropd (~, ~) ~
 // ABC -> AC
 // Drop down; pops the penultimate element that's on top
   swap drop
 end
 
-proc dropdd
+proc dropdd (~, ~, ~) ~
 // ABC -> A
   swap third ddrop
 end
 
-proc dupl
+proc dupl (~) (~, ~)
 // A -> AA
 | pop rax
 | push rax
 | push rax
 end
 
-proc ddupl
+proc ddupl (~) (~, ~, ~)
 // A -> AAA
   dupl dupl
 end
 
-proc swap
+proc swap (~, ~) (~, ~)
 // AB -> BA
 | pop rax
 | pop rbx
@@ -56,7 +57,7 @@ proc swap
 | push rbx
 end
 
-proc third
+proc third (~, ~, ~) (~, ~, ~)
 // ABC -> CAB
 // Gets the third last element of the stack and moves it on top
 | pop rax
@@ -69,17 +70,17 @@ end
 
 // Stack extended operations
 
-proc sDts
+proc sDts (~, ~, ~) (~, ~, ~, ~)
 // ABC -> BABC
   swap dupl third swap
 end
 
-proc Dt
+proc Dt (~, ~, ~) (~, ~, ~, ~)
 // ABC -> BAAC
   dupl third
 end
 
-proc st
+proc st (~, ~, ~) (~, ~, ~)
 // ABC -> CBA
   swap third
 end
@@ -87,7 +88,7 @@ end
 
 // Procedures on strings
 
-proc lens
+proc lens str int
 | extern strlen
 | pop rdi
 | call strlen
@@ -97,18 +98,32 @@ end
 
 // Procedures on integers
 
-proc is_even
+proc is_even int int
   mod: 2 eq: 0
 end
 
-proc is_odd
+proc is_odd int int
   mod: 2 not % eq: 0;
+end
+
+proc itos int str
+// Integer to string
+  alloc 8 itos_acc // buffer
+| extern sprintf
+| pop rdx         ; integer to tranform
+  @itos_acc
+| pop rdi         ; buffer
+  "%d"
+| pop rsi         ; format
+| xor rax, rax    ; no more args
+| call sprintf
+  @itos_acc
 end
 
 
 // Print functions
 
-proc printi 
+proc printi int ()
 | extern printf
   "%d"
 | pop rdi         ; format
@@ -117,7 +132,7 @@ proc printi
 | call printf 
 end
 
-proc printni 
+proc printni int ()
 | extern printf
   "%d\n"
 | pop rdi         ; format
@@ -126,7 +141,7 @@ proc printni
 | call printf 
 end
 
-proc prints
+proc prints str ()
 | extern printf
     "%s"
 | pop rdi         ; format
@@ -135,7 +150,7 @@ proc prints
 | call printf 
 end
 
-proc printns
+proc printns str ()
 | extern printf
   "%s\n"
 | pop rdi         ; format
@@ -144,7 +159,7 @@ proc printns
 | call printf 
 end
 
-proc puts
+proc puts (~) ()
 | extern puts
 | pop rdi
 | call puts
@@ -155,28 +170,28 @@ end
 
 // Operations
 
-proc add 
+proc add (int, int) int
 | pop rax
 | pop rbx
 | add rax, rbx
 | push rax
 end
  
-proc sub
+proc sub (int, int) int
 | pop rbx
 | pop rax
 | sub rax, rbx
 | push rax
 end
 
-proc mul
+proc mul (int, int) int
 | pop rax
 | pop rbx
 | mul rbx
 | push rax
 end
 
-proc div
+proc div (int, int) int
 | xor rdx, rdx
 | pop rbx
 | pop rax
@@ -184,7 +199,7 @@ proc div
 | push rax
 end
 
-proc mod
+proc mod (int, int) int
 | xor rdx, rdx
 | pop rbx
 | pop rax
@@ -192,21 +207,21 @@ proc mod
 | push rdx
 end
 
-proc succ
+proc succ int int
   1 add
 end
 
-proc pred
+proc pred int int
   -1 add
 end
 
-proc is_zero
+proc is_zero int int
   0 eq
 end
 
 // Logic
 
-proc eq 
+proc eq (int, int) int
 | mov rcx, 0
 | mov rdx, 1
 | pop rax
@@ -216,25 +231,25 @@ proc eq
 | push rcx
 end
 
-proc either
+proc either (int, int) int
 // Logical or
 | pop rax
 | pop rbx
 | or rax, rbx
 | push rax
 end
-proc or either end
+proc or (int, int) int either end
 
-proc both
+proc both (int, int) int
 // Logical and
 | pop rax
 | pop rbx
 | and rax, rbx
 | push rax
 end
-proc and both end
+proc and (int, int) int both end
 
-proc not
+proc not int int
 | pop rax
 | mov rbx, 1
 | xor rax, rbx
@@ -253,7 +268,7 @@ macro compareI
 | cmp rax, rbx
 end
 
-proc gt
+proc gt (int, int) int
 | pop rbx
 | add rbx, 1
 | push rbx
@@ -269,7 +284,7 @@ proc gt
   not
 end
 
-proc le
+proc le (int, int) int
   $compareI
 | jle _le_true
 | jmp _le_false
@@ -281,7 +296,7 @@ proc le
 | _le_end:
 end
 
-proc lt
+proc lt (int, int) int
   $compareI
 | jl _lt_true
 | jmp _lt_false
@@ -293,7 +308,7 @@ proc lt
 | _lt_end:
 end
 
-proc ge
+proc ge (int, int) int
   $compareI
 | jge _ge_true
 | jmp _ge_false
@@ -309,7 +324,7 @@ end
 
 // Syscalls
 
-proc exit 
+proc exit int ()
 | mov rax, 60
 | pop rdi
 | syscall
