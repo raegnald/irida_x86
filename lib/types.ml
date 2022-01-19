@@ -1,10 +1,18 @@
 
+(* All the possible types that Irida can work with *)
+type datatype =
+  | Generic
+  | Int
+  | Str
+[@@deriving eq, show
+  { with_path = false }]
+
 type op =
   | Ident of string
   | PushInt of int
   | PushStr of string
   | Loop of op list
-  | Proc of bool * string * op list
+  | Proc of string * bool * datatype list * datatype list * op list
   | Macro of string * op list
   | MacroReplace of string
   | If of op list * op list
