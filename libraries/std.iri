@@ -94,6 +94,7 @@ proc lens str int
 | call strlen
 | push rax
 end
+proc strlen str int lens end
 
 
 // Procedures on integers
