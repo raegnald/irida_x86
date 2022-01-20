@@ -1,6 +1,16 @@
 
 {
+  open Lexing
   open Parser
+
+  exception UnknownChar of char
+
+  let next_line lexbuf =
+    let pos = lexbuf.lex_curr_p in
+    lexbuf.lex_curr_p <-
+      { pos with pos_bol = pos.pos_cnum;
+        pos_lnum = pos.pos_lnum + 1 }
+
 
   (* Inline instructions list *)
   let instructions = ref ""
@@ -53,7 +63,8 @@ let digit = ['0'-'9']
 let int = '-'? digit ['0'-'9' '_']*
 
 (* Whitespace *)
-let ws = [' ' '\t' '\r' '\n']
+let ws = [' ' '\t']+
+let newline = '\r' | '\n' | "\r\n"
 
 (* Identifiers *)
 let letter = ['a'-'z' 'A'-'Z']
@@ -65,8 +76,11 @@ let backslash_escapes =
 
 
 rule read = parse
-  | ws+
+  | ws
       { read lexbuf }
+  | newline
+      { next_line lexbuf;
+        read lexbuf }
   | "//"
       { comment lexbuf }
   | "|"
@@ -115,6 +129,9 @@ rule read = parse
 
   | eof
       { EOF }
+
+  | _
+      { raise (UnknownChar (Lexing.lexeme lexbuf).[0]) }
 
 and comment = parse
   | "\n" | eof
