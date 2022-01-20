@@ -111,22 +111,23 @@ let rec compile_op op =
 
 
 let resolved_includes = ref []
-let rec resolve_includes (program: op list): op list =
-  match program with
+let rec resolve_includes (p: program) (file_name: string): program =
+  match p with
     | [] -> []
-    | Include f::rest ->
+    | Include f :: rest ->
         if List.exists (fun el -> String.equal el f) !resolved_includes then
-          resolve_includes rest
+          resolve_includes rest file_name
         else begin
           resolved_includes := List.append !resolved_includes [f];
-          (open_and_parse f |> resolve_includes) @ resolve_includes rest
+          resolve_includes (Program.open_and_parse f) file_name @
+          resolve_includes rest file_name
         end
     | op::rest ->
-        op::resolve_includes rest
+        op::resolve_includes rest file_name
 
-and compile ?(show_parse=false) ?(typecheck_program=true) source_file =
-  let program = open_and_parse source_file in
-  let program' = resolve_includes program in
+and compile ?(show_parse=false) ?(typecheck_program=true) source_filename =
+  let program = Program.open_and_parse source_filename in
+  let program' = resolve_includes program source_filename in
 
   if show_parse then
     show_program program' |> print_endline;
