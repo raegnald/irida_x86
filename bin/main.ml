@@ -84,12 +84,9 @@ let () =
     end
 
   with
-    | Sys_error e -> Inform.fatal e
+    | Sys_error e | Failure e -> Inform.fatal e
     | Invalid_argument _ -> Inform.fatal "Not enough arguments"
     | File.No_filename_specified -> Inform.fatal "No filename specified"
-    | Failure e -> Inform.fatal (e ^
-        ". It is probable that the input file has malformed syntax")
-    | Parser.Error -> Inform.fatal "Input file has bad syntax"
-    | Typecheck.Typechecking_error e -> Inform.fatal ("Type checking: " ^ e)
+    | Typecheck.Typechecking_error e -> Inform.fatal ("Type checking error: " ^ e)
     | Command.Cannot_run command -> Inform.fatal ("Cannot run " ^ command)
-    | Not_found -> () (* No error in here *)
+    | Not_found -> failwith "unreachable"
