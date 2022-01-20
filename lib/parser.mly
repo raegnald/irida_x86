@@ -1,47 +1,36 @@
 
-// %token <string> IDENT
-
-%token <int> INT
+%token <int>    INT
 %token <string> STR
 %token <string> IDENT
 %token <string> INLINE_ASM
 %token <string> MACRO_REPLACE
 
-%token COLON
-%token SEMICOLON
-%token PERCENT_SIGN
-%token EXCLAMATION
-%token INTERROGATION
-%token AT_SIGN
+%token INTT
+       STRT
 
-%token END
+%token DO END
+
+%token COLON SEMICOLON
+       PERCENT_SIGN
+       EXCLAMATION
+       INTERROGATION
+       AT_SIGN
 
 %token INCLUDE
 
 %token ALLOC
 
-%token PROC
-%token REC
+%token PROC REC
+       MACRO
 
-%token MACRO
+%token LOOP WHILE
+%token THEN ELSE
 
-%token LOOP
-%token WHILE
-%token DO
-%token THEN
-%token ELSE
+%token LPAREN RPAREN
 
-%token LPAREN
-%token RPAREN
-
-%token COMMA
-
-%token TILDE
-%token INTT
-%token STRT
+%token COMMA TILDE
 
 %token EOF
-
 
 %start <Types.program> prog
 
