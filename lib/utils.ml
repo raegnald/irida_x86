@@ -9,13 +9,6 @@ module Out = struct
     refbuf := Printf.sprintf "%s\n%s" !refbuf str
 end
 
-module Program = struct
-  let parse (source: string): op list =
-    let lexbuf = Lexing.from_string source in
-    let ast = Parser.prog Lexer.read lexbuf in
-    ast
-end
-
 (** [comment s] takes a string [s] and returns that same string but adapted as
     an assembly language comment *)
 let comment s =
@@ -53,22 +46,30 @@ module File = struct
     else filename
 end
 
-
-(** Inform shows messages to users *)
-module Inform = struct
+module TermColor = struct
+  let reset = "\027[0m"
   let red = "\027[31m"
   let green = "\027[32m"
   let yellow = "\027[33m"
   let blue = "\027[34m"
   let magenta = "\027[35m"
   let cyan = "\027[36m"
+end
+
+(** Inform shows messages to users *)
+module Inform = struct
+  open Printf
+  open TermColor
 
   let inform = ref true
   let inform_messages b =
     inform := b
 
-  let message ?(title="Message") ?(color=blue) =
-    Printf.eprintf "%s%15s\027[0m %s\n" color title
+  let to_color ?(color=blue) text =
+    sprintf "%s%s%s" color text reset
+
+  let message ?(title="Message") ?(color=blue) ?(channel=stdout) =
+    fprintf channel "%s%15s%s %s\n" color title reset
 
   let info msg =
     if !inform then
@@ -79,13 +80,36 @@ module Inform = struct
       message ~title:"Success" ~color:green msg
 
   let error ?(title="Error") ?(halt=false) msg =
-    message ~title:title ~color:red msg;
+    message ~title:title ~color:red ~channel:stderr msg;
     if halt then exit 1
 
-  let fatal ?(title="Fatal Error") msg =
-    message ~title:title ~color:red msg;
+  let fatal ?(title="Fatal") msg =
+    message ~title:title ~color:red ~channel:stderr msg;
     exit 1
 
+end
+
+
+module Program = struct
+  open Printf
+
+  let print_position lexbuf filename =
+    let open Lexing in
+    let pos = lexbuf.lex_curr_p in
+    sprintf "%s:%d:%d"
+      filename pos.pos_lnum
+      (pos.pos_cnum - pos.pos_bol + 1)
+
+  let parse source filename =
+    let lexbuf = Lexing.from_string source in
+    try Parser.prog Lexer.read lexbuf with
+      | Lexer.UnknownChar _c ->
+          Inform.fatal ("Unknown character in " ^ print_position lexbuf filename)
+      | Parser.Error ->
+          Inform.fatal ("Syntactic error in " ^ print_position lexbuf filename)
+
+  let open_and_parse source_filename =
+    parse (File.read_all source_filename) source_filename
 end
 
 module Command = struct
@@ -97,11 +121,6 @@ module Command = struct
       | WEXITED _ -> ()
       | _ -> raise (Cannot_run command)
 end
-
-let open_and_parse source_file =
-  source_file
-    |> File.read_all
-    |> Program.parse
 
 let string_of_datatype dt =
     show_datatype dt |> String.lowercase_ascii
