@@ -6,7 +6,7 @@ output_name="irida.exe";
 
 if command -v dune &> /dev/null; then
   # Build
-  dune build;
+  dune build --release;
   mv -f ./_build/default/bin/main.exe $output_name;
 
   # Run if argument is passed
