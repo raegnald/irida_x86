@@ -43,8 +43,10 @@ let typecheck_op op =
                not (equal_datatype top Generic) &&
                not (equal_datatype top t) then
               raise (Typechecking_error (
-                sprintf "Defintion expects %s, passed %s in %s call"
-                    (string_of_datatype t) (string_of_datatype top) name))
+                sprintf "Defintion expects %s but passed %s in %s procedure call"
+                    (string_of_datatype t |> Inform.to_color ~color:TermColor.red)
+                    (string_of_datatype top |> Inform.to_color ~color:TermColor.red)
+                    (name |> Inform.to_color)))
           ) inputs;
 
           List.iter (fun t -> push t s) outputs
