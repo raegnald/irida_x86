@@ -1,9 +1,5 @@
 (include_subdirs unqualified)
 
-(menhir
- (modules parser))
-(ocamllex lexer)
-
 (library
  (name irida)
  (preprocess (pps ppx_deriving.show
