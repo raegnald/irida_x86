@@ -11,10 +11,10 @@ endif
 syntax keyword iriTodos TODO FIXME NOTE
 syntax keyword iriBool true false
 syntax keyword iriKeywords
-  \ end
+  \ do end
   \ alloc
   \ proc rec macro
-  \ assert
+  \ break assert
   \ printi printni prints printns
   \ drop dupl ddrop
   \ ret nothing
