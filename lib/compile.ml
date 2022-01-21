@@ -38,8 +38,7 @@ let rec compile_op op =
 
           Hashtbl.remove !procedures x;
           procCall x |> a;
-        with
-          | Not_found -> procCall x |> a )
+        with Not_found -> procCall x |> a )
 
     | MacroReplace x ->
         let body = Hashtbl.find !macros x in
