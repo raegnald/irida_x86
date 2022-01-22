@@ -4,61 +4,61 @@
 //                            [Ronaldo Gligan]                               //
 //                                                                           //
 ///////////////////////////////////////////////////////////////////////////////
+
 // C standard input/output bindings
 // Convinient procedures
 // ...
 
-proc nothing () ()
+// Symbolic definitions
+
+proc nothing void -> void
 | nop
 end
+proc pass void -> void nothing end
 
-proc id ~ ~ end
+proc id gen -> gen
+  pass
+end
 
 // Stack operations
 
-proc drop (~) ()
+unsafe proc drop gen -> void
 // ABC -> BC
 | pop rax
 end
 
-proc ddrop (~, ~) ()
+proc ddrop (gen, gen) -> void
 // ABC -> C
   drop drop
 end
 
-proc dropd (~, ~) ~
-// ABC -> AC
+proc dropd (gen, gen) -> gen // ABC -> AC
 // Drop down; pops the penultimate element that's on top
   swap drop
 end
 
-proc dropdd (~, ~, ~) ~
-// ABC -> A
+proc dropdd (gen, gen, gen) -> gen // ABC -> A
   swap third ddrop
 end
 
-proc dupl (~) (~, ~)
-// A -> AA
+unsafe proc dupl (gen) -> (gen, gen) // A -> AA
 | pop rax
 | push rax
 | push rax
 end
 
-proc ddupl (~) (~, ~, ~)
-// A -> AAA
+proc ddupl gen -> (gen, gen, gen) // A -> AAA
   dupl dupl
 end
 
-proc swap (~, ~) (~, ~)
-// AB -> BA
+unsafe proc swap (gen, gen) -> (gen, gen) // AB -> BA
 | pop rax
 | pop rbx
 | push rax
 | push rbx
 end
 
-proc third (~, ~, ~) (~, ~, ~)
-// ABC -> CAB
+unsafe proc third (gen, gen, gen) -> (gen, gen, gen) // ABC -> CAB
 // Gets the third last element of the stack and moves it on top
 | pop rax
 | pop rbx
@@ -68,46 +68,46 @@ proc third (~, ~, ~) (~, ~, ~)
 | push rcx
 end
 
-// Stack extended operations
 
-proc sDts (~, ~, ~) (~, ~, ~, ~)
-// ABC -> BABC
+// Extended stack operations
+
+proc sDts (gen, gen)
+       -> (gen, gen, gen) // AB -> BAB
   swap dupl third swap
 end
 
-proc Dt (~, ~, ~) (~, ~, ~, ~)
-// ABC -> BAAC
+proc Dt (gen, gen, gen)
+     -> (gen, gen, gen, gen) // AB -> BAA
   dupl third
 end
 
-proc st (~, ~, ~) (~, ~, ~)
-// ABC -> CBA
+proc st (gen, gen, gen)
+     -> (gen, gen, gen) // ABC -> CBA
   swap third
 end
 
-
 // Procedures on strings
 
-proc lens str int
+unsafe proc lens str -> int
 | extern strlen
 | pop rdi
 | call strlen
 | push rax
 end
-proc strlen str int lens end
+proc strlen str -> int lens end
 
 
 // Procedures on integers
 
-proc is_even int int
+proc is_even int -> int
   mod: 2 eq: 0
 end
 
-proc is_odd int int
+proc is_odd int -> int
   mod: 2 not % eq: 0;
 end
 
-proc itos int str
+unsafe proc itos int -> str
 // Integer to string
   alloc int itos_acc // buffer
 | extern sprintf
@@ -124,7 +124,7 @@ end
 
 // Print functions
 
-proc printi int ()
+unsafe proc printi int -> void
 | extern printf
   "%d"
 | pop rdi         ; format
@@ -133,7 +133,7 @@ proc printi int ()
 | call printf 
 end
 
-proc printni int ()
+unsafe proc printni int -> void
 | extern printf
   "%d\n"
 | pop rdi         ; format
@@ -142,7 +142,7 @@ proc printni int ()
 | call printf 
 end
 
-proc prints str ()
+unsafe proc prints str -> void
 | extern printf
     "%s"
 | pop rdi         ; format
@@ -151,7 +151,7 @@ proc prints str ()
 | call printf 
 end
 
-proc printns str ()
+unsafe proc printns str -> void
 | extern printf
   "%s\n"
 | pop rdi         ; format
@@ -160,39 +160,39 @@ proc printns str ()
 | call printf 
 end
 
-proc puts (~) ()
-| extern puts
-| pop rdi
-| call puts
-end
+//proc puts gen -> void
+//| extern puts
+//| pop rdi
+//| call puts
+//end
 
 
 ///////////////////////////////////////////////////////////////////////////////
 
 // Operations
 
-proc add (int, int) int
+unsafe proc add (int, int) -> int
 | pop rax
 | pop rbx
 | add rax, rbx
 | push rax
 end
  
-proc sub (int, int) int
+unsafe proc sub (int, int) -> int
 | pop rbx
 | pop rax
 | sub rax, rbx
 | push rax
 end
 
-proc mul (int, int) int
+unsafe proc mul (int, int) -> int
 | pop rax
 | pop rbx
 | mul rbx
 | push rax
 end
 
-proc div (int, int) int
+unsafe proc div (int, int) -> int
 | xor rdx, rdx
 | pop rbx
 | pop rax
@@ -200,7 +200,7 @@ proc div (int, int) int
 | push rax
 end
 
-proc mod (int, int) int
+unsafe proc mod (int, int) -> int
 | xor rdx, rdx
 | pop rbx
 | pop rax
@@ -208,21 +208,22 @@ proc mod (int, int) int
 | push rdx
 end
 
-proc succ int int
+proc succ int -> int
   1 add
 end
 
-proc pred int int
+proc pred int -> int
   -1 add
 end
 
-proc is_zero int int
+proc is_zero int -> int
   0 eq
 end
 
+
 // Logic
 
-proc eq (int, int) int
+unsafe proc eq (int, int) -> int
 | mov rcx, 0
 | mov rdx, 1
 | pop rax
@@ -232,25 +233,25 @@ proc eq (int, int) int
 | push rcx
 end
 
-proc either (int, int) int
+unsafe proc either (int, int) -> int
 // Logical or
 | pop rax
 | pop rbx
 | or rax, rbx
 | push rax
 end
-proc or (int, int) int either end
+proc or (int, int) -> int either end
 
-proc both (int, int) int
+unsafe proc both (int, int) -> int
 // Logical and
 | pop rax
 | pop rbx
 | and rax, rbx
 | push rax
 end
-proc and (int, int) int both end
+proc and (int, int) -> int both end
 
-proc not int int
+unsafe proc not int -> int
 | pop rax
 | mov rbx, 1
 | xor rax, rbx
@@ -269,7 +270,7 @@ macro compareI
 | cmp rax, rbx
 end
 
-proc gt (int, int) int
+unsafe proc gt (int, int) -> int
 | pop rbx
 | add rbx, 1
 | push rbx
@@ -285,7 +286,7 @@ proc gt (int, int) int
   not
 end
 
-proc le (int, int) int
+unsafe proc le (int, int) -> int
   $compareI
 | jle _le_true
 | jmp _le_false
@@ -297,7 +298,7 @@ proc le (int, int) int
 | _le_end:
 end
 
-proc lt (int, int) int
+unsafe proc lt (int, int) -> int
   $compareI
 | jl _lt_true
 | jmp _lt_false
@@ -309,7 +310,7 @@ proc lt (int, int) int
 | _lt_end:
 end
 
-proc ge (int, int) int
+unsafe proc ge (int, int) -> int
   $compareI
 | jge _ge_true
 | jmp _ge_false
@@ -325,7 +326,7 @@ end
 
 // Syscalls
 
-proc exit int ()
+unsafe proc exit int -> void
 | mov rax, 60
 | pop rdi
 | syscall
