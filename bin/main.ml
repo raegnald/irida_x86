@@ -87,6 +87,8 @@ let () =
     | Sys_error e | Failure e -> Inform.fatal e
     | Invalid_argument _ -> Inform.fatal "Not enough arguments"
     | File.No_filename_specified -> Inform.fatal "No filename specified"
-    | Typecheck.Typechecking_error e -> Inform.fatal ("Type checking error: " ^ e)
+    | Typecheck.Typechecking_error e -> Inform.fatal ("Type-checking error: " ^ e)
     | Command.Cannot_run command -> Inform.fatal ("Cannot run " ^ command)
-    | Not_found -> failwith "unreachable"
+    (* | Not_found -> failwith "unreachable" *)
+    | Stack.Empty -> Inform.fatal
+        "Insufficient elements in the stack, cannot perform operation"
