@@ -5,8 +5,8 @@
 %token <string> INLINE_ASM
 %token <string> MACRO_REPLACE
 
-%token INTT
-       STRT
+%token GENT VOIDT
+       INTT STRT
 
 %token DO END
 
@@ -20,7 +20,7 @@
 
 %token ALLOC
 
-%token PROC REC
+%token PROC UNSAFE REC
        MACRO
 
 %token LOOP WHILE
@@ -28,7 +28,9 @@
 
 %token LPAREN RPAREN
 
-%token COMMA TILDE
+%token SINGLE_RIGHT_ARROW
+
+%token COMMA
 
 %token EOF
 
@@ -54,7 +56,7 @@ block(fin):
   ;
 
 datatype:
-  | TILDE { Types.Generic }
+  | GENT { Types.Generic }
   | INTT { Types.Int }
   | STRT { Types.Str }
 
@@ -69,6 +71,8 @@ comma_sep_type_lst:
 proc_type_list:
   | LPAREN; l = comma_sep_type_lst
       { l }
+  | VOIDT
+      { [] }
   | t = datatype
       { [t] }
 
@@ -108,18 +112,29 @@ op:
   | WHILE; cond = block(DO); loop_body = block(END)
       { Types.While (cond, loop_body) }
 
-  // Non-recursive procedure definitions
-  | PROC; name = IDENT;
-    inputs = proc_type_list; outputs = proc_type_list;
+  // Non-recursive and type-checked procedure definitions
+  | PROC; name = IDENT; inputs = proc_type_list;
+    SINGLE_RIGHT_ARROW; outputs = proc_type_list;
     ops = block(END)
-      { Types.Proc (name, false, inputs, outputs, ops) }
-
+      { Types.Proc (name, false, false, inputs, outputs, ops) }
 
   // Recursive procedures definitions
-  | PROC; REC name = IDENT;
-    inputs = proc_type_list; outputs = proc_type_list;
+  | REC; PROC; name = IDENT; inputs = proc_type_list;
+    SINGLE_RIGHT_ARROW; outputs = proc_type_list;
     ops = block(END)
-      { Types.Proc (name, true, inputs, outputs, ops) }
+      { Types.Proc (name, false, true, inputs, outputs, ops) }
+
+  // unsafe x ..
+  | UNSAFE; PROC; name = IDENT; inputs = proc_type_list;
+    SINGLE_RIGHT_ARROW; outputs = proc_type_list;
+    ops = block(END)
+      { Types.Proc (name, true, false, inputs, outputs, ops) }
+
+  // unsafe rec x ..
+  | UNSAFE; REC; PROC; name = IDENT; inputs = proc_type_list;
+    SINGLE_RIGHT_ARROW; outputs = proc_type_list;
+    ops = block(END)
+      { Types.Proc (name, true, true, inputs, outputs, ops) }
 
   // Macro definitions
   | MACRO; name = IDENT; ops = block(END)

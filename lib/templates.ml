@@ -2,12 +2,12 @@
 let (@@) s1 s2 = s1 ^ "\n" ^ s2
 
 let header =
-  "BITS 64"                              @@
-  "global    main"                       @@
-  "section   .text"                      @@
-  "main:"                                @@
-  "    mov [args_ptr], rsp"              @@
-  "    mov rax, ret_stack_end"           @@
+  "BITS 64"                      @@
+  "global    main"               @@
+  "section   .text"              @@
+  "main:"                        @@
+  "    mov [args_ptr], rsp"      @@
+  "    mov rax, ret_stack_end"   @@
   "    mov [ret_stack_rsp], rax"
 
 

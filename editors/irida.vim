@@ -13,7 +13,7 @@ syntax keyword iriBool true false
 syntax keyword iriKeywords
   \ do end
   \ alloc
-  \ proc rec macro
+  \ proc unsafe rec macro
   \ break assert
   \ printi printni prints printns
   \ drop dupl ddrop

@@ -22,13 +22,14 @@
     tbl
 
   let keyword_table = 
-    create_hashtable 15 [
+    create_hashtable 18 [
       ("end", END);
 
       ("include", INCLUDE);
 
       ("proc", PROC);
       ("rec", REC);
+      ("unsafe", UNSAFE);
       ("macro", MACRO);
 
       ("alloc", ALLOC);
@@ -44,6 +45,8 @@
       ("true", INT 1);
       ("false", INT 0);
 
+      ("gen", GENT);
+      ("void", VOIDT);
       ("int", INTT);
       ("str", STRT)
     ]
@@ -105,8 +108,12 @@ rule read = parse
       { INTERROGATION }
   | "@"
       { AT_SIGN }
-  | "~"
-      { TILDE }
+  (* | "#"
+      { HASH_SIGN } *)
+  (* | "~"
+      { TILDE } *)
+  | "->"
+      { SINGLE_RIGHT_ARROW }
 
   | int
       { INT (Lexing.lexeme lexbuf

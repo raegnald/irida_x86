@@ -13,7 +13,8 @@ type op =
   | PushStr of string
   | Loop of op list
   | While of op list * op list
-  | Proc of string * bool * datatype list * datatype list * op list
+  | Proc of string * bool * bool * datatype list * datatype list *
+            op list (* 1st bool: unsafe, 2nd: rec *)
   | Macro of string * op list
   | MacroReplace of string
   | If of op list * op list
@@ -28,23 +29,3 @@ type op =
 type program = op list
 [@@deriving show
   { with_path = false }]
-
-
-(* type memAddr = int
-[@@deriving show
-  { with_path = false }]
-
-type contextOp =
-  { op: op;
-    address: int;
-    body_size: int;
-    operand: memAddr }
-[@@deriving show
-  { with_path = false }] *)
-  
-(* type contextProgram = contextOp list
-[@@deriving show
-  { with_path = false }] *)
-  
-(* asmOp:
-      next instruction = address + body_size *)
