@@ -124,40 +124,29 @@ end
 
 // Print functions
 
-unsafe proc printi int -> void
+unsafe proc printf (gen, gen) -> void 
+// 2 arg, 1 format
 | extern printf
-  "%d"
 | pop rdi         ; format
-| pop rsi         ; number to print
+| pop rsi         ; element passed to print
 | xor rax, rax    ; no more args
-| call printf 
+| call printf
 end
 
-unsafe proc printni int -> void
-| extern printf
-  "%d\n"
-| pop rdi         ; format
-| pop rsi         ; number to print
-| xor rax, rax    ; no more args
-| call printf 
+proc printi int -> void
+  "%d" printf
 end
 
-unsafe proc prints str -> void
-| extern printf
-    "%s"
-| pop rdi         ; format
-| pop rsi         ; number to print
-| xor rax, rax    ; no more args
-| call printf 
+proc printni int -> void
+  "%d\n" printf
 end
 
-unsafe proc printns str -> void
-| extern printf
-  "%s\n"
-| pop rdi         ; format
-| pop rsi         ; number to print
-| xor rax, rax    ; no more args
-| call printf 
+proc prints str -> void
+  "%s" printf
+end
+
+proc printns str -> void
+  "%s\n" printf
 end
 
 //proc puts gen -> void
