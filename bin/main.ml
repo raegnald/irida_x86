@@ -22,7 +22,7 @@ let () =
 
   Arg.parse
     [ ("-o", Arg.String (fun name -> output_file := name),
-        "Output executable name");
+        "Set output executable name");
       ("-build", Arg.Set only_build,
         "Just build, otherwise it will also run the executable");
       ("-asm", Arg.Set generate_asm,
