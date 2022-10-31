@@ -24,7 +24,7 @@ let () =
     [ ("-o", Arg.String (fun name -> output_file := name),
         "Output executable name");
       ("-build", Arg.Set only_build,
-        "Just build, elsewhere it will also run the executable");
+        "Just build, otherwise it will also run the executable");
       ("-asm", Arg.Set generate_asm,
         "Keep the assembly file");
       ("-inform", Arg.Set activate_msgs,
