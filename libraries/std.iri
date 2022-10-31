@@ -9,6 +9,7 @@
 // Convinient procedures
 // ...
 
+
 // Symbolic definitions
 
 proc nothing void -> void
@@ -19,6 +20,7 @@ proc pass void -> void nothing end
 proc id gen -> gen
   pass
 end
+
 
 // Stack operations
 
@@ -312,7 +314,6 @@ unsafe proc ge (int, int) -> int
 end
 
 
-
 // Syscalls
 
 unsafe proc exit int -> void
@@ -320,4 +321,3 @@ unsafe proc exit int -> void
 | pop rdi
 | syscall
 end
-

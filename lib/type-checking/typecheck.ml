@@ -22,7 +22,7 @@ let populate_blocks = function
       Hashtbl.add !procedures name (inputs, is_unsafe, body, outputs)
 
   | Macro (name, body) ->
-      Hashtbl.add !macros ("$" ^ name) body
+      Hashtbl.add !macros name body
 
   | Alloc (data_t, name) ->
       Hashtbl.add !allocations name data_t

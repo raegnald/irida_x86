@@ -125,7 +125,8 @@ rule read = parse
         STR (Buffer.contents string_buff) }
 
   | "$" ident as m
-      { MACRO_REPLACE m }
+      { MACRO_REPLACE (
+          List.nth (String.split_on_char '$' m) 1) }
 
   | ident as word
       { try

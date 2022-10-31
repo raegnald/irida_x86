@@ -12,6 +12,8 @@ let strings: (int * string) list ref = ref []
 let index = ref 0
 
 let advance_index () = index := !index + 1
+let new_index () = advance_index (); !index
+
 let a = append
 
 let rec compile_op = function
@@ -19,8 +21,7 @@ let rec compile_op = function
       pushInt i |> a
 
   | PushStr s ->
-      advance_index ();
-      let i = !index in
+      let i = new_index () in
       strings := (i, s) :: !strings;
       pushStr i |> a
 
@@ -41,8 +42,7 @@ let rec compile_op = function
       List.iter compile_op body
 
   | If (then_branch, else_branch) ->
-      advance_index ();
-      let i = !index in
+      let i = new_index () in
       ifHeader i |> a;
       List.iter compile_op then_branch; (* Then *)
       jmpOp (string_of_int i ^ "_ifend") |> a;
@@ -52,8 +52,7 @@ let rec compile_op = function
       ifFooter i |> a
 
   | Loop ops ->
-      advance_index ();
-      let i = !index in
+      let i = new_index () in
       "label_loop_" ^ (string_of_int i) ^ ":" |> a;
       List.iter compile_op ops;
       jmpOp ("loop_" ^ (string_of_int i)) |> a
@@ -68,8 +67,7 @@ let rec compile_op = function
       line |> a
 
   | While (cond_ops, body_ops) ->
-      advance_index ();
-      let i = !index in
+      let i = new_index () in
 
       "label_while_cond_" ^ (string_of_int i) ^ ":" |> a;
       List.iter compile_op cond_ops;
@@ -100,17 +98,17 @@ let populate_compilation_blocks = function
       end
 
   | Macro (name, ops) ->
-      Hashtbl.add !macros ("$" ^ name) ops
+      Hashtbl.add !macros name ops
 
   | Alloc (_data_t, name) ->
       let start = !mem_capacity in
       mem_capacity := !mem_capacity + 8; (* amount; *)
       allocations := (start, name) :: !allocations
-  
+
   | _ -> ()
 
 let resolved_includes = ref []
-let rec resolve_includes (p: program) (file_name: string): program =
+let rec resolve_includes (p: program) file_name : program =
   match p with
     | [] -> []
     | Include f :: rest ->
