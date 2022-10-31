@@ -1,12 +1,16 @@
 <!-- Iris image -->
-<img src="https://images.unsplash.com/photo-1540163502599-a3284e17072d?w=1000" style="display:inline-block; float:right; margin:0 0 25px 25px; width: 100%; max-width: 500px;" />
+<img src="https://images.unsplash.com/photo-1540163502599-a3284e17072d?w=1000"
+style="display:inline-block; float:right; margin:0 0 25px 25px; width: 100%; max-width: 500px;" />
 
 
 # The Irida Programming Language
 
-> **NOTE** *Irida is a work in progress. Anything can change without prior warning. Do everything at your own risk.*
+> **NOTE** *Irida is a work in progress. Anything can change without prior warning.
+Do everything at your own risk.*
 
-Irida is general purpose compiled programming language that targets `x86_64 GNU/Linux`. It is a stack-based language as you put elements on the stack, and work with them by arranging them depending on the program.
+Irida is general purpose compiled programming language that targets `x86_64 GNU/Linux`.
+It is a stack-based language as you put elements on the stack, and work with
+them by arranging them depending on the program.
 
 ## Installation
 
@@ -28,7 +32,8 @@ If the Irida program is contained in `file.iri` you would do
 irida ./file.iri
 ```
 
-That will create the executable file with the same name (but without any extension) in the same folder that the file is. It will also run it.
+That will create the executable file with the same name (but without any
+extension) in the same folder that the file is. It will also run it.
 
 For help:
 
@@ -38,7 +43,8 @@ irida -help
 
 ## Examples
 
-The [examples folder](examples/) contains programs that let you see what Irida is capable of.
+The [examples folder](examples/) contains programs that let you see what Irida
+is capable of.
 
 ### Hello World
 ```irida
@@ -79,4 +85,6 @@ fact: 5
 
 ---
 
-*Interesting fact*: The name actually comes from the ancient Greek word ίριδα, which translates to iris.
+*Interesting fact*: The name actually comes from the ancient Greek word ίριδα,
+which translates to [iris](https://en.wikipedia.org/wiki/Iris_(plant)), a
+beautiful garden flower.
