@@ -28,7 +28,7 @@ let str_to_dec_val_list str =
   |> List.fold_left (fun res c -> Printf.sprintf "%s%d," res (int_of_char c)) "")
   ^ " 0"
 
-let footer (strings: (int * string) list) (allocations: (int * string) list) mem_capacity =
+let footer strings allocations mem_capacity =
   let str_to_asm (index, str) =
     "str_" ^ string_of_int index ^
     ": db " ^ str_to_dec_val_list str ^ "\n" in

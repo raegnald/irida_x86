@@ -38,8 +38,8 @@ module File = struct
     Printf.fprintf oc "%s\n" contents;
     close_out oc
 
-  (** [add_current_directory_if_implicit filename] prepens `./` to filename if it
-      doesn't contain an explicit reference to the working directory  *)
+  (** [add_current_directory_if_implicit filename] prepends `./` to filename if
+      it doesn't contain an explicit reference to the working directory *)
   let add_current_directory_if_implicit filename =
     if Filename.is_implicit filename then
       "./" ^ filename
@@ -79,12 +79,15 @@ module Inform = struct
     if !inform then
       message ~title:"Success" ~color:green msg
 
+  let warn ?(title="Warning") msg =
+    message ~title ~color:yellow msg
+
   let error ?(title="Error") ?(halt=false) msg =
-    message ~title:title ~color:red ~channel:stderr msg;
+    message ~title ~color:red ~channel:stderr msg;
     if halt then exit 1
 
   let fatal ?(title="Fatal") msg =
-    message ~title:title ~color:red ~channel:stderr msg;
+    message ~title ~color:red ~channel:stderr msg;
     exit 1
 
 end
