@@ -4,9 +4,9 @@
 
 # The Irida Programming Language
 
-> **NOTE** *Irida is a project that is in progress. Anything can change without prior warning. Do everything at your own risk.*
+> **NOTE** *Irida is a work in progress. Anything can change without prior warning. Do everything at your own risk.*
 
-Irida is general purpose compiled programming language that targets `x86_64 GNU/Linux`. It works with the concept of being stack-based, you put things on the stack, work with them by arranging them depending on your needs.
+Irida is general purpose compiled programming language that targets `x86_64 GNU/Linux`. It is a stack-based language as you put elements on the stack, and work with them by arranging them depending on the program.
 
 ## Installation
 
